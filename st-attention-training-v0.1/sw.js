@@ -3,7 +3,7 @@ importScripts("./version.js");
 const VERSION_INFO = self.ST_APP_VERSION || {
   version: "0.1.0-dev",
 };
-const SERVICE_WORKER_BUILD = "guidance-20260930-1";
+const SERVICE_WORKER_BUILD = "card-preview-20261002-1";
 const CACHE_NAME = `st-attention-training-${VERSION_INFO.version}-${SERVICE_WORKER_BUILD}`;
 const ASSETS = [
   "./",

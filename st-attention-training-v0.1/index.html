@@ -10,8 +10,8 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./icon.svg">
-    <title>ST注意訓練 v2.1.6</title>
-    <link rel="stylesheet" href="./styles.css?v=2.1.8-guidance-20260930-1">
+    <title>ST注意訓練 v2.1.9</title>
+    <link rel="stylesheet" href="./styles.css?v=2.1.9-card-preview-20261002-1">
   </head>
   <body>
     <div class="app-shell">
@@ -23,7 +23,7 @@
           </div>
           <div class="header-tools">
             <div class="app-status" aria-live="polite">
-              <span id="app-version" class="status-pill">v2.1.6</span>
+              <span id="app-version" class="status-pill">v2.1.9</span>
               <span id="offline-status" class="status-pill">オフライン確認中</span>
               <button id="update-app-button" type="button" class="secondary-action compact-action">最新版を確認</button>
               <a href="../index.html" class="secondary-action compact-action shell-link">STアプリへ</a>
@@ -33,16 +33,40 @@
 
         <main class="task-menu" aria-label="課題一覧">
           <button id="open-motion-task" type="button" class="task-card">
+            <span class="task-card__preview task-preview task-preview--motion" aria-hidden="true">
+              <span class="motion-lane"></span>
+              <span class="motion-arrow motion-arrow--left"></span>
+              <span class="motion-arrow motion-arrow--top"></span>
+              <span class="motion-target"></span>
+              <span class="motion-distractor motion-distractor--square"></span>
+              <span class="motion-distractor motion-distractor--triangle"></span>
+            </span>
             <span class="task-card__tag">課題1</span>
             <strong>移動刺激選択反応</strong>
             <span>移動する刺激への選択反応、見逃し、誤反応、反応時間を記録します。</span>
           </button>
           <button id="open-grid-task" type="button" class="task-card">
+            <span class="task-card__preview task-preview task-preview--grid" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span class="is-hit"></span><span></span><span></span><span></span><span class="is-miss"></span><span></span>
+              <span></span><span></span><span></span><span class="is-cue"></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span class="is-hit"></span><span></span><span></span><span></span><span></span>
+            </span>
             <span class="task-card__tag">課題2</span>
             <strong>視覚探索グリッド</strong>
             <span>7×5のターゲットから探索方略、空間的偏り、点滅刺激への反応を記録します。</span>
           </button>
           <button id="open-tmt-task" type="button" class="task-card">
+            <span class="task-card__preview task-preview task-preview--tmt" aria-hidden="true">
+              <span class="tmt-line tmt-line--one"></span>
+              <span class="tmt-line tmt-line--two"></span>
+              <span class="tmt-line tmt-line--three"></span>
+              <span class="tmt-node tmt-node--one">1</span>
+              <span class="tmt-node tmt-node--two">2</span>
+              <span class="tmt-node tmt-node--three">3</span>
+              <span class="tmt-node tmt-node--four">4</span>
+            </span>
             <span class="task-card__tag">課題3</span>
             <strong>TMT風順序探索</strong>
             <span>数字や数字・かなを順番に選び、探索速度、切り替え、誤反応を記録します。</span>
@@ -738,7 +762,7 @@
       </section>
     </div>
 
-    <script src="./version.js?v=2.1.8-guidance-20260930-1"></script>
-    <script src="./app.js?v=2.1.8-guidance-20260930-1"></script>
+    <script src="./version.js?v=2.1.9-card-preview-20261002-1"></script>
+    <script src="./app.js?v=2.1.9-card-preview-20261002-1"></script>
   </body>
 </html>

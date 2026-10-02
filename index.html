@@ -12,7 +12,7 @@
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./icon.svg">
     <title>STアプリ</title>
-    <link rel="stylesheet" href="./styles.css?v=st-suite-guidance-20260930-1">
+    <link rel="stylesheet" href="./styles.css?v=st-suite-card-preview-20261002-1">
   </head>
   <body>
     <div class="app-shell">
@@ -22,7 +22,7 @@
           <h1>メニュー</h1>
         </div>
         <div class="status-area" aria-live="polite">
-          <span id="app-version" class="status-pill">v1.0.8</span>
+          <span id="app-version" class="status-pill">v1.0.9</span>
           <span id="offline-status" class="status-pill">オフライン確認中</span>
           <button id="update-app-button" type="button" class="secondary-action">最新版を確認</button>
         </div>
@@ -30,12 +30,38 @@
 
       <main class="app-menu" aria-label="アプリ一覧">
         <a class="app-card app-card--attention" href="./st-attention-training-v0.1/index.html">
+          <span class="app-card__preview app-card__preview--attention" aria-hidden="true">
+            <span class="preview-stage">
+              <span class="preview-path preview-path--motion"></span>
+              <span class="preview-shape preview-shape--target"></span>
+              <span class="preview-shape preview-shape--square"></span>
+              <span class="preview-shape preview-shape--triangle"></span>
+              <span class="preview-grid">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span class="is-active"></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span class="is-marked"></span><span></span>
+              </span>
+            </span>
+          </span>
           <span class="app-card__tag">訓練</span>
           <strong>注意障害訓練</strong>
           <span>移動刺激選択反応、視覚探索グリッド、TMT風順序探索を実施します。</span>
         </a>
 
         <a class="app-card app-card--catr" href="./cat-r-input-app-v0.1/index.html">
+          <span class="app-card__preview app-card__preview--catr" aria-hidden="true">
+            <span class="preview-report">
+              <span class="preview-report__header"></span>
+              <span class="preview-report__row"></span>
+              <span class="preview-report__row short"></span>
+              <span class="preview-chart">
+                <span style="--bar: 72%"></span>
+                <span style="--bar: 48%"></span>
+                <span style="--bar: 86%"></span>
+                <span style="--bar: 62%"></span>
+              </span>
+            </span>
+          </span>
           <span class="app-card__tag">評価入力</span>
           <strong>CAT-R入力</strong>
           <span>CAT-Rの結果入力、計算補助、前回比較、記録管理を行います。</span>
@@ -43,7 +69,7 @@
       </main>
     </div>
 
-    <script src="./version.js?v=st-suite-guidance-20260930-1"></script>
-    <script src="./app.js?v=st-suite-guidance-20260930-1"></script>
+    <script src="./version.js?v=st-suite-card-preview-20261002-1"></script>
+    <script src="./app.js?v=st-suite-card-preview-20261002-1"></script>
   </body>
 </html>

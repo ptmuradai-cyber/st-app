@@ -4,7 +4,7 @@ const VERSION_INFO = self.ST_SUITE_VERSION || {
   version: "1.0.0-local",
 };
 const CACHE_PREFIX = "st-app-suite-";
-const SERVICE_WORKER_BUILD = "suite-guidance-20260930-1";
+const SERVICE_WORKER_BUILD = "card-preview-20261002-1";
 const CACHE_NAME = `${CACHE_PREFIX}${VERSION_INFO.version}-${SERVICE_WORKER_BUILD}`;
 const ASSETS = [
   "./",
