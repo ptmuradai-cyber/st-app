@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ST注意訓練">
+  <rect width="512" height="512" rx="96" fill="#0f766e"/>
+  <path d="M256 72v368M72 256h368" stroke="#d8f4f0" stroke-width="28" stroke-linecap="round" opacity="0.72"/>
+  <circle cx="158" cy="156" r="44" fill="#d92d20" stroke="#ffffff" stroke-width="12"/>
+  <rect x="310" y="112" width="88" height="88" rx="12" fill="#101828" stroke="#ffffff" stroke-width="12"/>
+  <path d="M256 300l58 102H198z" fill="#d92d20" stroke="#ffffff" stroke-width="12" stroke-linejoin="round"/>
+</svg>

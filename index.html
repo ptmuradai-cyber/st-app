@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="STアプリ">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="description" content="STで使用する注意訓練と評価入力をまとめたローカルWebアプリ">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icon.svg">
+    <title>STアプリ</title>
+    <link rel="stylesheet" href="./styles.css?v=st-suite-guidance-20260930-1">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">STアプリ</p>
+          <h1>メニュー</h1>
+        </div>
+        <div class="status-area" aria-live="polite">
+          <span id="app-version" class="status-pill">v1.0.8</span>
+          <span id="offline-status" class="status-pill">オフライン確認中</span>
+          <button id="update-app-button" type="button" class="secondary-action">最新版を確認</button>
+        </div>
+      </header>
+
+      <main class="app-menu" aria-label="アプリ一覧">
+        <a class="app-card app-card--attention" href="./st-attention-training-v0.1/index.html">
+          <span class="app-card__tag">訓練</span>
+          <strong>注意障害訓練</strong>
+          <span>移動刺激選択反応、視覚探索グリッド、TMT風順序探索を実施します。</span>
+        </a>
+
+        <a class="app-card app-card--catr" href="./cat-r-input-app-v0.1/index.html">
+          <span class="app-card__tag">評価入力</span>
+          <strong>CAT-R入力</strong>
+          <span>CAT-Rの結果入力、計算補助、前回比較、記録管理を行います。</span>
+        </a>
+      </main>
+    </div>
+
+    <script src="./version.js?v=st-suite-guidance-20260930-1"></script>
+    <script src="./app.js?v=st-suite-guidance-20260930-1"></script>
+  </body>
+</html>

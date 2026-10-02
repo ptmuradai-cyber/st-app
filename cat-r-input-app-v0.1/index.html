@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CAT-R入力">
+  <meta name="theme-color" content="#f7f5ef">
+  <meta name="description" content="CAT-Rの結果入力、計算補助、結果出力を行う端末保存型Webアプリ">
+  <title>CAT-R結果入力</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css?v=16-print-sheet-20260929-1">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">CAT-R</p>
+        <h1>成績入力</h1>
+        <div class="app-meta" aria-label="アプリ情報">
+          <span id="versionLabel">v0.1.2</span>
+          <span id="offlineStatusLabel">端末保存</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="icon-button secondary" href="../index.html" aria-label="STアプリへ戻る" title="STアプリへ戻る">
+          <span aria-hidden="true">STアプリ</span>
+        </a>
+        <button class="icon-button secondary" type="button" id="refreshButton" aria-label="最新版を確認" title="最新版を確認">
+          <span aria-hidden="true">最新版を確認</span>
+        </button>
+        <button class="icon-button secondary is-hidden" type="button" id="editButton" aria-label="編集" title="編集">
+          <span aria-hidden="true">編集</span>
+        </button>
+        <button class="icon-button" type="button" id="saveButton" aria-label="保存" title="保存">
+          <span aria-hidden="true">保存</span>
+        </button>
+        <button class="icon-button secondary" type="button" id="printButton" aria-label="PDF出力" title="PDF出力">
+          <span aria-hidden="true">PDF</span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="表示切替">
+      <button class="tab is-active" data-tab="input" type="button">入力</button>
+      <button class="tab" data-tab="summary" type="button">結果</button>
+      <button class="tab" data-tab="records" type="button">履歴</button>
+    </nav>
+
+    <main>
+      <section class="panel patient-panel" aria-label="患者情報">
+        <div class="patient-grid">
+          <label class="id-field">
+            <span>利用者ID</span>
+            <input id="patientId" autocomplete="off" inputmode="text" tabindex="1" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）">
+          </label>
+          <label>
+            <span>年齢</span>
+            <input id="patientAge" type="number" min="0" max="120" inputmode="numeric" tabindex="2">
+          </label>
+          <label>
+            <span>実施日</span>
+            <input id="testDate" type="date" tabindex="3">
+          </label>
+          <label>
+            <span>基準年代</span>
+            <input id="ageBand" readonly tabindex="-1">
+          </label>
+        </div>
+      </section>
+
+      <section class="view is-active" id="inputView">
+        <div class="table-wrap" role="region" aria-label="CAT-R入力表">
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>大項目</th>
+                <th>下位検査</th>
+                <th>指標</th>
+                <th>値</th>
+                <th>単位</th>
+                <th>範囲・判定</th>
+              </tr>
+            </thead>
+            <tbody id="inputRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="view" id="summaryView">
+        <div class="summary-layout">
+          <section class="panel">
+            <h2>結果サマリー</h2>
+            <div id="summaryCards" class="summary-cards"></div>
+          </section>
+          <section class="panel">
+            <h2>入力完了状況</h2>
+            <div id="completionList" class="completion-list"></div>
+          </section>
+          <section class="panel wide">
+            <div class="section-head compact">
+              <h2>入力漏れチェック</h2>
+              <span id="missingBadge" class="status-pill"></span>
+            </div>
+            <div id="missingList" class="missing-list"></div>
+          </section>
+          <section class="panel wide">
+            <h2>前回比較</h2>
+            <div id="comparisonPanel" class="comparison-panel"></div>
+          </section>
+          <section class="panel wide print-keep">
+            <div class="section-head compact">
+              <h2>所見下書き</h2>
+              <button class="text-button" type="button" id="copyImpressionButton">コピー</button>
+            </div>
+            <textarea id="impressionDraft" class="impression-draft" readonly aria-label="所見下書き"></textarea>
+          </section>
+          <section class="panel wide print-profile-panel">
+            <h2>プロフィール一覧</h2>
+            <div class="result-table-wrap">
+              <table class="result-table">
+                <thead>
+                  <tr>
+                    <th>項目</th>
+                    <th>値</th>
+                    <th>前回</th>
+                    <th>変化</th>
+                    <th>単位</th>
+                    <th>状態</th>
+                  </tr>
+                </thead>
+                <tbody id="resultRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="recordsView">
+        <section class="panel content-panel">
+          <div class="section-head">
+            <h2>保存済みデータ</h2>
+            <div class="data-actions">
+              <button class="text-button" type="button" id="exportButton">書き出し</button>
+              <button class="text-button" type="button" id="importButton">読み込み</button>
+              <button class="text-button danger" type="button" id="clearAllButton">全削除</button>
+              <input id="importFile" type="file" accept="application/json,.json" hidden>
+            </div>
+          </div>
+          <p class="panel-note">保存済みデータはこのブラウザ内に保存されます。iPadや別ブラウザへ移す場合は、書き出しファイルを使って読み込みます。</p>
+          <div id="recordList" class="record-list"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <section id="printProfileSheet" class="print-profile-sheet" aria-hidden="true"></section>
+
+  <template id="assistTemplate">
+    <tr class="assist-row">
+      <td colspan="6">
+        <div class="assist-panel"></div>
+      </td>
+    </tr>
+  </template>
+
+  <script src="./version.js?v=16-print-sheet-20260929-1"></script>
+  <script src="./app.js?v=16-print-sheet-20260929-1"></script>
+</body>
+</html>

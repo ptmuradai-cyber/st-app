@@ -1,0 +1,19 @@
+{
+  "name": "ST注意訓練 v0.1",
+  "short_name": "ST注意訓練",
+  "description": "注意障害のST訓練向けローカルWebアプリ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f4f7f8",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

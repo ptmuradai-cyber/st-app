@@ -1,0 +1,19 @@
+{
+  "name": "STアプリ",
+  "short_name": "STアプリ",
+  "description": "STで使用する注意訓練と評価入力をまとめたローカルWebアプリ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#f4f7f8",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ST注意訓練">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icon.svg">
+    <title>ST注意訓練 v2.1.6</title>
+    <link rel="stylesheet" href="./styles.css?v=2.1.8-guidance-20260930-1">
+  </head>
+  <body>
+    <div class="app-shell">
+      <section id="home-screen" class="screen is-active" aria-labelledby="home-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">ST注意訓練</p>
+            <h1 id="home-title">課題選択</h1>
+          </div>
+          <div class="header-tools">
+            <div class="app-status" aria-live="polite">
+              <span id="app-version" class="status-pill">v2.1.6</span>
+              <span id="offline-status" class="status-pill">オフライン確認中</span>
+              <button id="update-app-button" type="button" class="secondary-action compact-action">最新版を確認</button>
+              <a href="../index.html" class="secondary-action compact-action shell-link">STアプリへ</a>
+            </div>
+          </div>
+        </header>
+
+        <main class="task-menu" aria-label="課題一覧">
+          <button id="open-motion-task" type="button" class="task-card">
+            <span class="task-card__tag">課題1</span>
+            <strong>移動刺激選択反応</strong>
+            <span>移動する刺激への選択反応、見逃し、誤反応、反応時間を記録します。</span>
+          </button>
+          <button id="open-grid-task" type="button" class="task-card">
+            <span class="task-card__tag">課題2</span>
+            <strong>視覚探索グリッド</strong>
+            <span>7×5のターゲットから探索方略、空間的偏り、点滅刺激への反応を記録します。</span>
+          </button>
+          <button id="open-tmt-task" type="button" class="task-card">
+            <span class="task-card__tag">課題3</span>
+            <strong>TMT風順序探索</strong>
+            <span>数字や数字・かなを順番に選び、探索速度、切り替え、誤反応を記録します。</span>
+          </button>
+        </main>
+      </section>
+
+      <section id="setup-screen" class="screen" aria-labelledby="setup-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">課題1</p>
+            <h1 id="setup-title">移動刺激選択反応</h1>
+          </div>
+          <div class="header-tools">
+            <button id="motion-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
+            <div class="target-preview" aria-label="現在のターゲット">
+              <span class="target-preview__label">ターゲット</span>
+              <span id="target-preview-mark" class="mark color-red shape-circle" aria-hidden="true"></span>
+            </div>
+          </div>
+        </header>
+
+        <form id="settings-form" class="settings-grid">
+          <fieldset class="settings-panel user-panel">
+            <legend>利用者ID</legend>
+            <label class="login-field">
+              <span>ID</span>
+              <input id="user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
+            </label>
+            <div class="login-actions">
+              <button id="login-button" type="button" class="secondary-action">ログイン</button>
+              <span id="active-user" class="status-pill">ID未入力</span>
+            </div>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/24" aria-label="訓練日">
+                <input id="training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>ターゲット条件</legend>
+            <div class="control-block">
+              <span class="control-label">色</span>
+              <div class="segmented" role="radiogroup" aria-label="ターゲット色">
+                <label>
+                  <input type="radio" name="targetColor" value="red" checked>
+                  <span>赤</span>
+                </label>
+                <label>
+                  <input type="radio" name="targetColor" value="black">
+                  <span>黒</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <span class="control-label">形</span>
+              <div class="segmented" role="radiogroup" aria-label="ターゲット形">
+                <label>
+                  <input type="radio" name="targetShape" value="circle" checked>
+                  <span>丸</span>
+                </label>
+                <label>
+                  <input type="radio" name="targetShape" value="square">
+                  <span>四角</span>
+                </label>
+                <label>
+                  <input type="radio" name="targetShape" value="triangle">
+                  <span>三角</span>
+                </label>
+              </div>
+            </div>
+
+            <label class="range-field target-count-field">
+              <span>ターゲット提示回数</span>
+              <input id="target-count-range" type="range" min="1" max="30" step="1" value="10">
+              <input id="target-count" type="number" min="1" max="30" step="1" value="10">
+              <span id="target-count-total" class="unit wide-unit">回 / 全30回</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>選択性注意</legend>
+            <label class="range-field">
+              <span>同時表示数</span>
+              <input id="simultaneous-count-range" type="range" min="1" max="6" step="1" value="1">
+              <input id="simultaneous-count" type="number" min="1" max="6" step="1" value="1">
+              <span class="unit">個</span>
+            </label>
+
+            <label class="range-field">
+              <span>同時ターゲット数</span>
+              <input id="simultaneous-target-count-range" type="range" min="1" max="1" step="1" value="1">
+              <input id="simultaneous-target-count" type="number" min="1" max="1" step="1" value="1">
+              <span id="simultaneous-target-total" class="unit wide-unit">個 / 全1個</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>刺激</legend>
+            <label class="range-field">
+              <span>大きさ</span>
+              <input id="stimulus-size-range" type="range" min="28" max="120" step="2" value="64">
+              <input id="stimulus-size" type="number" min="28" max="120" step="2" value="64">
+              <span class="unit">px</span>
+            </label>
+
+            <div class="control-block">
+              <span class="control-label">ターゲット点滅</span>
+              <div class="segmented blink-options" role="radiogroup" aria-label="ターゲット点滅">
+                <label>
+                  <input type="radio" name="blinkMode" value="none">
+                  <span>なし</span>
+                </label>
+                <label>
+                  <input type="radio" name="blinkMode" value="target" checked>
+                  <span>ターゲットのみ</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <span class="control-label">点滅の速さ</span>
+              <div class="segmented blink-speed-options" role="radiogroup" aria-label="点滅の速さ">
+                <label>
+                  <input type="radio" name="blinkSpeed" value="slow">
+                  <span>ゆっくり</span>
+                </label>
+                <label>
+                  <input type="radio" name="blinkSpeed" value="normal" checked>
+                  <span>ふつう</span>
+                </label>
+                <label>
+                  <input type="radio" name="blinkSpeed" value="fast">
+                  <span>速い</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <span class="control-label">動きの速さ</span>
+              <div class="segmented speed-options" role="radiogroup" aria-label="動きの速さ">
+                <label>
+                  <input type="radio" name="speedPreset" value="slow">
+                  <span>ゆっくり</span>
+                </label>
+                <label>
+                  <input type="radio" name="speedPreset" value="normal" checked>
+                  <span>ふつう</span>
+                </label>
+                <label>
+                  <input type="radio" name="speedPreset" value="fast">
+                  <span>速い</span>
+                </label>
+                <label>
+                  <input type="radio" name="speedPreset" value="custom">
+                  <span>手動</span>
+                </label>
+              </div>
+            </div>
+
+            <label class="range-field">
+              <span>見えている時間</span>
+              <input id="display-duration-range" type="range" min="0.5" max="5" step="0.1" value="1.8">
+              <input id="display-duration" type="number" min="0.5" max="5" step="0.1" value="1.8">
+              <span class="unit">秒</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>訓練</legend>
+            <label class="number-field">
+              <span>試行数</span>
+              <input id="trial-count" type="number" min="5" max="120" step="5" value="30">
+              <span class="unit">回</span>
+            </label>
+
+            <div class="paired-fields">
+              <label class="number-field">
+                <span>次の刺激まで（最短）</span>
+                <input id="min-interval" type="number" min="0.3" max="5" step="0.1" value="0.7">
+                <span class="unit">秒</span>
+              </label>
+              <label class="number-field">
+                <span>次の刺激まで（最長）</span>
+                <input id="max-interval" type="number" min="0.3" max="7" step="0.1" value="1.8">
+                <span class="unit">秒</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="settings-actions">
+            <button type="submit" class="primary-action">訓練開始</button>
+          </div>
+        </form>
+
+        <section class="result-section setup-history" aria-labelledby="setup-history-title">
+          <div class="section-heading">
+            <div>
+              <h3 id="setup-history-title">前回結果・履歴</h3>
+              <p id="setup-history-context" class="result-context">IDを入力してログインすると履歴を確認できます</p>
+            </div>
+          </div>
+          <div id="setup-last-summary" class="summary-grid compact-summary" aria-live="polite"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>訓練日時</th>
+                  <th>試行数</th>
+                  <th>正答率</th>
+                  <th>正反応</th>
+                  <th>見逃し</th>
+                  <th>誤反応</th>
+                  <th>平均反応時間（秒）</th>
+                  <th>確認</th>
+                </tr>
+              </thead>
+              <tbody id="setup-history-results"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="training-screen" class="screen training-screen" aria-labelledby="training-title">
+        <header class="training-bar">
+          <div>
+            <p class="eyebrow">訓練中</p>
+            <h2 id="training-title">スペースキー / 反応ボタン</h2>
+          </div>
+          <div class="training-stats" aria-live="polite">
+            <span id="trial-progress">0/0</span>
+            <span id="live-score">正反応 0 / 見逃し 0 / 誤反応 0</span>
+          </div>
+          <button id="stop-button" type="button" class="secondary-action">結果へ</button>
+        </header>
+
+        <main id="stage" class="stage" tabindex="-1" aria-label="刺激表示領域">
+          <div class="region-guides" aria-hidden="true">
+            <span class="guide guide-x"></span>
+            <span class="guide guide-y"></span>
+            <span class="region-label region-label-top-left">左上</span>
+            <span class="region-label region-label-top-right">右上</span>
+            <span class="region-label region-label-bottom-left">左下</span>
+            <span class="region-label region-label-bottom-right">右下</span>
+          </div>
+          <div id="stimulus-layer" class="stimulus-layer" aria-hidden="true"></div>
+          <div id="feedback" class="feedback" aria-live="polite">待機中</div>
+        </main>
+
+        <div class="response-row">
+          <button id="response-button" type="button" class="response-button">反応</button>
+        </div>
+      </section>
+
+      <section id="result-screen" class="screen" aria-labelledby="result-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">結果</p>
+            <h2 id="result-title">訓練結果</h2>
+            <p id="result-context" class="result-context">利用者ID: ID未入力</p>
+          </div>
+          <div class="result-actions">
+            <button id="result-pdf-button" type="button" class="secondary-action">PDF表示</button>
+            <button id="retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
+            <button id="back-settings-button" type="button" class="secondary-action">設定に戻る</button>
+            <button id="result-home-button" type="button" class="secondary-action">課題選択へ</button>
+          </div>
+        </header>
+
+        <div id="summary-grid" class="summary-grid" aria-live="polite"></div>
+
+        <section class="result-section guidance-section" aria-labelledby="guidance-title">
+          <div class="section-heading">
+            <div>
+              <h3 id="guidance-title">訓練結果サマリー</h3>
+              <p class="result-context">結果に基づく補助提案です。最終判断はSTが行ってください。</p>
+            </div>
+          </div>
+          <div id="training-guidance" class="guidance-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="comparison-title">
+          <div class="section-heading">
+            <h3 id="comparison-title">前回比較</h3>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>項目</th>
+                  <th>今回</th>
+                  <th>前回</th>
+                  <th>変化</th>
+                </tr>
+              </thead>
+              <tbody id="comparison-results"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="result-section" aria-labelledby="history-title">
+          <div class="section-heading">
+            <h3 id="history-title">履歴</h3>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>訓練日時</th>
+                  <th>試行数</th>
+                  <th>正答率</th>
+                  <th>正反応</th>
+                  <th>見逃し</th>
+                  <th>誤反応</th>
+                  <th>平均反応時間（秒）</th>
+                  <th>確認</th>
+                </tr>
+              </thead>
+              <tbody id="history-results"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="result-section" aria-labelledby="region-title">
+          <div class="section-heading">
+            <h3 id="region-title">領域別成績</h3>
+            <button id="download-csv-button" type="button" class="secondary-action">CSV保存</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>領域</th>
+                  <th>正反応</th>
+                  <th>見逃し</th>
+                  <th>ターゲット計</th>
+                  <th>正反応率</th>
+                </tr>
+              </thead>
+              <tbody id="region-results"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="result-section" aria-labelledby="log-title">
+          <div class="section-heading">
+            <h3 id="log-title">試行ログ</h3>
+          </div>
+          <div class="table-wrap log-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>刺激</th>
+                  <th>ターゲット</th>
+                  <th>侵入</th>
+                  <th>領域</th>
+                  <th>結果</th>
+                  <th>反応時間（秒）</th>
+                </tr>
+              </thead>
+              <tbody id="trial-log"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="grid-setup-screen" class="screen" aria-labelledby="grid-setup-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">課題2</p>
+            <h1 id="grid-setup-title">視覚探索グリッド</h1>
+            <p class="result-context">横7×縦5の35点を使い、能動探索と受動的な注意の向け直しを確認します。</p>
+          </div>
+          <button id="grid-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
+        </header>
+
+        <form id="grid-settings-form" class="settings-grid">
+          <fieldset class="settings-panel user-panel">
+            <legend>利用者ID</legend>
+            <label class="login-field">
+              <span>ID</span>
+              <input id="grid-user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
+            </label>
+            <div class="login-actions">
+              <button id="grid-login-button" type="button" class="secondary-action">ログイン</button>
+              <span id="grid-active-user" class="status-pill">ID未入力</span>
+            </div>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="grid-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
+                <input id="grid-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="grid-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset>
+
+          <fieldset class="settings-panel grid-mode-panel">
+            <legend>課題モード</legend>
+            <div class="segmented grid-mode-options" role="radiogroup" aria-label="課題モード">
+              <label><input type="radio" name="gridMode" value="active" checked><span>能動探索</span></label>
+              <label><input type="radio" name="gridMode" value="passive"><span>受動探索</span></label>
+              <label><input type="radio" name="gridMode" value="delete"><span>削除</span></label>
+              <label><input type="radio" name="gridMode" value="color"><span>着色</span></label>
+              <label><input type="radio" name="gridMode" value="reveal"><span>強調</span></label>
+              <label><input type="radio" name="gridMode" value="sequence"><span>順序</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>表示条件</legend>
+            <label class="range-field">
+              <span>ターゲットの大きさ</span>
+              <input id="grid-dot-size-range" type="range" min="36" max="96" step="2" value="78">
+              <input id="grid-dot-size" type="number" min="36" max="96" step="2" value="78">
+              <span class="unit">px</span>
+            </label>
+            <label class="range-field">
+              <span>点滅の速さ</span>
+              <input id="grid-blink-sec-range" type="range" min="0.3" max="1.6" step="0.1" value="0.8">
+              <input id="grid-blink-sec" type="number" min="0.3" max="1.6" step="0.1" value="0.8">
+              <span class="unit">秒</span>
+            </label>
+            <div class="control-block">
+              <span class="control-label">ターゲット番号</span>
+              <div class="segmented number-options" role="radiogroup" aria-label="ターゲット番号">
+                <label>
+                  <input type="radio" name="gridNumbers" value="show" checked>
+                  <span>表示</span>
+                </label>
+                <label>
+                  <input type="radio" name="gridNumbers" value="hide">
+                  <span>非表示</span>
+                </label>
+              </div>
+            </div>
+            <label class="range-field">
+              <span>反応待ち時間</span>
+              <input id="grid-timeout-range" type="range" min="1" max="8" step="0.5" value="3">
+              <input id="grid-timeout" type="number" min="1" max="8" step="0.5" value="3">
+              <span class="unit">秒</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>訓練量</legend>
+            <label class="number-field">
+              <span>提示数</span>
+              <input id="grid-target-count" type="number" min="5" max="35" step="5" value="35">
+              <span class="unit">個</span>
+            </label>
+            <p class="panel-note">能動探索・削除・着色では35個すべてを対象にします。受動探索・強調・順序では提示数を調整できます。</p>
+          </fieldset>
+
+          <div class="settings-actions">
+            <button type="submit" class="primary-action">訓練開始</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="grid-training-screen" class="screen grid-training-screen" aria-labelledby="grid-training-title">
+        <header class="training-bar">
+          <div>
+            <p class="eyebrow">訓練中</p>
+            <h2 id="grid-training-title">視覚探索グリッド</h2>
+          </div>
+          <div class="training-stats" aria-live="polite">
+            <span id="grid-progress">0/35</span>
+            <span id="grid-live-score">正反応 0 / 見逃し 0 / 誤反応 0</span>
+          </div>
+          <button id="grid-stop-button" type="button" class="secondary-action">結果へ</button>
+        </header>
+
+        <main class="grid-stage" aria-label="視覚探索グリッド">
+          <div id="grid-board" class="grid-board"></div>
+          <div id="grid-feedback" class="feedback" aria-live="polite">待機中</div>
+        </main>
+      </section>
+
+      <section id="grid-result-screen" class="screen" aria-labelledby="grid-result-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">結果</p>
+            <h2 id="grid-result-title">視覚探索グリッド結果</h2>
+            <p id="grid-result-context" class="result-context">利用者ID: ID未入力</p>
+          </div>
+          <div class="result-actions">
+            <button id="grid-result-pdf-button" type="button" class="secondary-action">PDF表示</button>
+            <button id="grid-retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
+            <button id="grid-back-settings-button" type="button" class="secondary-action">設定に戻る</button>
+            <button id="grid-result-home-button" type="button" class="secondary-action">課題選択へ</button>
+          </div>
+        </header>
+
+        <div id="grid-summary-grid" class="summary-grid" aria-live="polite"></div>
+
+        <section class="result-section guidance-section" aria-labelledby="grid-guidance-title">
+          <div class="section-heading">
+            <div>
+              <h3 id="grid-guidance-title">訓練結果サマリー</h3>
+              <p class="result-context">結果に基づく補助提案です。最終判断はSTが行ってください。</p>
+            </div>
+          </div>
+          <div id="grid-guidance" class="guidance-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="grid-map-title">
+          <div class="section-heading">
+            <h3 id="grid-map-title">位置別結果</h3>
+            <button id="grid-download-csv-button" type="button" class="secondary-action">CSV保存</button>
+          </div>
+          <div id="grid-result-map" class="grid-result-map"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="grid-log-title">
+          <div class="section-heading">
+            <h3 id="grid-log-title">反応ログ</h3>
+          </div>
+          <div class="table-wrap log-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>位置</th>
+                  <th>左右</th>
+                  <th>上下</th>
+                  <th>結果</th>
+                  <th>反応時間（秒）</th>
+                </tr>
+              </thead>
+              <tbody id="grid-trial-log"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="tmt-setup-screen" class="screen" aria-labelledby="tmt-setup-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">課題3</p>
+            <h1 id="tmt-setup-title">TMT風順序探索</h1>
+            <p class="result-context">TMTに類似したデジタル課題です。標準検査値としてではなく、訓練・観察の補助として使用します。</p>
+          </div>
+          <button id="tmt-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
+        </header>
+
+        <form id="tmt-settings-form" class="settings-grid">
+          <fieldset class="settings-panel user-panel">
+            <legend>利用者ID</legend>
+            <label class="login-field">
+              <span>ID</span>
+              <input id="tmt-user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
+            </label>
+            <div class="login-actions">
+              <button id="tmt-login-button" type="button" class="secondary-action">ログイン</button>
+              <span id="tmt-active-user" class="status-pill">ID未入力</span>
+            </div>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="tmt-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
+                <input id="tmt-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="tmt-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>課題条件</legend>
+            <div class="control-block">
+              <span class="control-label">種類</span>
+              <div class="segmented tmt-type-options" role="radiogroup" aria-label="TMT種類">
+                <label><input type="radio" name="tmtType" value="a" checked><span>TMT-A</span></label>
+                <label><input type="radio" name="tmtType" value="b"><span>TMT-B</span></label>
+              </div>
+            </div>
+            <div class="control-block">
+              <span class="control-label">操作</span>
+              <div class="segmented tmt-mode-options" role="radiogroup" aria-label="TMT操作">
+                <label><input type="radio" name="tmtMode" value="tap" checked><span>タップ</span></label>
+                <label><input type="radio" name="tmtMode" value="trace"><span>なぞり</span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="settings-panel">
+            <legend>表示条件</legend>
+            <label class="range-field">
+              <span>項目の大きさ</span>
+              <input id="tmt-node-size-range" type="range" min="42" max="82" step="2" value="62">
+              <input id="tmt-node-size" type="number" min="42" max="82" step="2" value="62">
+              <span class="unit">px</span>
+            </label>
+            <label class="number-field">
+              <span>項目数</span>
+              <input id="tmt-item-count" type="number" min="8" max="25" step="1" value="25">
+              <span class="unit">個</span>
+            </label>
+          </fieldset>
+
+          <div class="settings-actions">
+            <button type="submit" class="primary-action">訓練開始</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="tmt-training-screen" class="screen tmt-training-screen" aria-labelledby="tmt-training-title">
+        <header class="training-bar">
+          <div>
+            <p class="eyebrow">訓練中</p>
+            <h2 id="tmt-training-title">TMT風順序探索</h2>
+          </div>
+          <div class="training-stats" aria-live="polite">
+            <span id="tmt-progress">0/25</span>
+            <span id="tmt-next-target">次: 1</span>
+            <span id="tmt-live-score">誤反応 0</span>
+          </div>
+          <button id="tmt-stop-button" type="button" class="secondary-action">結果へ</button>
+        </header>
+
+        <main class="tmt-stage" aria-label="TMT風順序探索">
+          <div id="tmt-board" class="tmt-board">
+            <svg id="tmt-line-layer" class="tmt-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <polyline id="tmt-connector-line" class="tmt-connector-line" points=""></polyline>
+              <polyline id="tmt-trace-line" class="tmt-trace-line" points=""></polyline>
+            </svg>
+          </div>
+          <div id="tmt-feedback" class="feedback" aria-live="polite">待機中</div>
+        </main>
+      </section>
+
+      <section id="tmt-result-screen" class="screen" aria-labelledby="tmt-result-title">
+        <header class="app-header">
+          <div>
+            <p class="eyebrow">結果</p>
+            <h2 id="tmt-result-title">TMT風順序探索結果</h2>
+            <p id="tmt-result-context" class="result-context">利用者ID: ID未入力</p>
+          </div>
+          <div class="result-actions">
+            <button id="tmt-result-pdf-button" type="button" class="secondary-action">PDF表示</button>
+            <button id="tmt-retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
+            <button id="tmt-back-settings-button" type="button" class="secondary-action">設定に戻る</button>
+            <button id="tmt-result-home-button" type="button" class="secondary-action">課題選択へ</button>
+          </div>
+        </header>
+
+        <div id="tmt-summary-grid" class="summary-grid" aria-live="polite"></div>
+
+        <section class="result-section guidance-section" aria-labelledby="tmt-guidance-title">
+          <div class="section-heading">
+            <div>
+              <h3 id="tmt-guidance-title">訓練結果サマリー</h3>
+              <p class="result-context">結果に基づく補助提案です。最終判断はSTが行ってください。</p>
+            </div>
+          </div>
+          <div id="tmt-guidance" class="guidance-grid" aria-live="polite"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="tmt-map-title">
+          <div class="section-heading">
+            <h3 id="tmt-map-title">順序マップ</h3>
+            <button id="tmt-download-csv-button" type="button" class="secondary-action">CSV保存</button>
+          </div>
+          <div id="tmt-result-map" class="tmt-result-map"></div>
+        </section>
+
+        <section class="result-section" aria-labelledby="tmt-log-title">
+          <div class="section-heading">
+            <h3 id="tmt-log-title">反応ログ</h3>
+          </div>
+          <div class="table-wrap log-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>正しい項目</th>
+                  <th>選択</th>
+                  <th>結果</th>
+                  <th>反応時間（秒）</th>
+                  <th>累積時間（秒）</th>
+                </tr>
+              </thead>
+              <tbody id="tmt-trial-log"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <script src="./version.js?v=2.1.8-guidance-20260930-1"></script>
+    <script src="./app.js?v=2.1.8-guidance-20260930-1"></script>
+  </body>
+</html>
