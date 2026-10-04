@@ -4,7 +4,7 @@ const VERSION_INFO = self.ST_SUITE_VERSION || {
   version: "1.0.0-local",
 };
 const CACHE_PREFIX = "st-app-suite-";
-const SERVICE_WORKER_BUILD = "card-preview-20261002-1";
+const SERVICE_WORKER_BUILD = "icon-png-20261005-1";
 const CACHE_NAME = `${CACHE_PREFIX}${VERSION_INFO.version}-${SERVICE_WORKER_BUILD}`;
 const ASSETS = [
   "./",
@@ -14,6 +14,9 @@ const ASSETS = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
+  "./apple-touch-icon.png",
+  "./icon-192.png",
+  "./icon-512.png",
   "./st-attention-training-v0.1/",
   "./st-attention-training-v0.1/index.html",
   "./st-attention-training-v0.1/version.js",
