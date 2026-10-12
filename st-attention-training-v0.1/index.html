@@ -10,8 +10,8 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./icon.svg">
-    <title>ST注意訓練 v2.1.9</title>
-    <link rel="stylesheet" href="./styles.css?v=2.1.9-card-preview-20261002-1">
+    <title>ST注意訓練 v2.2.0</title>
+    <link rel="stylesheet" href="./styles.css?v=2.2.0-storage-update-20261012-1">
   </head>
   <body>
     <div class="app-shell">
@@ -26,10 +26,15 @@
               <span id="app-version" class="status-pill">v2.1.9</span>
               <span id="offline-status" class="status-pill">オフライン確認中</span>
               <button id="update-app-button" type="button" class="secondary-action compact-action">最新版を確認</button>
+              <button id="attention-export-backup-button" type="button" class="secondary-action compact-action">履歴を書き出し</button>
+              <button id="attention-import-backup-button" type="button" class="secondary-action compact-action">履歴を読み込み</button>
+              <input id="attention-import-backup-file" type="file" accept="application/json,.json" hidden>
               <a href="../index.html" class="secondary-action compact-action shell-link">STアプリへ</a>
             </div>
           </div>
         </header>
+
+        <p class="storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
 
         <main class="task-menu" aria-label="課題一覧">
           <button id="open-motion-task" type="button" class="task-card">
@@ -275,6 +280,7 @@
             </div>
           </div>
           <div id="setup-last-summary" class="summary-grid compact-summary" aria-live="polite"></div>
+          <p class="panel-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
           <div class="table-wrap">
             <table>
               <thead>
@@ -762,7 +768,7 @@
       </section>
     </div>
 
-    <script src="./version.js?v=2.1.9-card-preview-20261002-1"></script>
-    <script src="./app.js?v=2.1.9-card-preview-20261002-1"></script>
+    <script src="./version.js?v=2.2.0-storage-update-20261012-1"></script>
+    <script src="./app.js?v=2.2.0-storage-update-20261012-1"></script>
   </body>
 </html>

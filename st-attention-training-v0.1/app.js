@@ -96,6 +96,9 @@
   const STORAGE_KEY = "st-attention-training-v0.1-records";
   const GRID_STORAGE_KEY = "st-attention-grid-v2.0-records";
   const TMT_STORAGE_KEY = "st-attention-tmt-v2.1-records";
+  const HISTORY_LIMIT = 300;
+  const HISTORY_WARN_LIMIT = Math.floor(HISTORY_LIMIT * 0.9);
+  const ATTENTION_BACKUP_VERSION = 1;
   const VERSION_INFO = window.ST_APP_VERSION || {
     version: "0.1.0-dev",
     label: "v0.1",
@@ -178,6 +181,9 @@
   const appVersionLabel = $("#app-version");
   const offlineStatusLabel = $("#offline-status");
   const updateAppButton = $("#update-app-button");
+  const attentionExportBackupButton = $("#attention-export-backup-button");
+  const attentionImportBackupButton = $("#attention-import-backup-button");
+  const attentionImportBackupFile = $("#attention-import-backup-file");
   const targetPreviewMark = $("#target-preview-mark");
   const userIdInput = $("#user-id");
   const loginButton = $("#login-button");
@@ -338,6 +344,9 @@
     resultPdfButton.addEventListener("click", () => showResultPdf(resultScreen, "移動刺激選択反応", resultPdfButton));
     downloadCsvButton.addEventListener("click", downloadCsv);
     updateAppButton.addEventListener("click", refreshOfflineApp);
+    attentionExportBackupButton.addEventListener("click", exportAttentionBackup);
+    attentionImportBackupButton.addEventListener("click", () => attentionImportBackupFile.click());
+    attentionImportBackupFile.addEventListener("change", importAttentionBackup);
     gridSettingsForm.addEventListener("submit", (event) => {
       event.preventDefault();
       startGridSession(readGridSettings());
@@ -1922,7 +1931,10 @@
     if (record.userId && record.results.length) {
       const records = readGridStoredRecords();
       records.unshift(record);
-      writeGridStoredRecords(records.slice(0, 300));
+      if (!writeGridStoredRecords(records)) {
+        state.grid.currentRecord = record;
+        return record;
+      }
     }
     state.grid.currentRecord = record;
     state.grid.sessionSaved = true;
@@ -1939,7 +1951,7 @@
   }
 
   function writeGridStoredRecords(records) {
-    localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify(records));
+    return writeHistoryRecords(GRID_STORAGE_KEY, records, "視覚探索グリッド履歴");
   }
 
   function downloadGridCsv() {
@@ -1965,7 +1977,7 @@
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `st-attention-grid-${record.userId || "no-id"}-${record.createdAt.slice(0, 10)}.csv`;
+    anchor.download = `st-attention-grid-${record.createdAt.slice(0, 10)}.csv`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -2623,7 +2635,10 @@
     if (record.userId && record.results.length) {
       const records = readTmtStoredRecords();
       records.unshift(record);
-      writeTmtStoredRecords(records.slice(0, 300));
+      if (!writeTmtStoredRecords(records)) {
+        state.tmt.currentRecord = record;
+        return record;
+      }
     }
     state.tmt.currentRecord = record;
     state.tmt.sessionSaved = true;
@@ -2640,7 +2655,7 @@
   }
 
   function writeTmtStoredRecords(records) {
-    localStorage.setItem(TMT_STORAGE_KEY, JSON.stringify(records));
+    return writeHistoryRecords(TMT_STORAGE_KEY, records, "TMT風順序探索履歴");
   }
 
   function downloadTmtCsv() {
@@ -2668,7 +2683,7 @@
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `st-attention-tmt-${record.userId || "no-id"}-${record.createdAt.slice(0, 10)}.csv`;
+    anchor.download = `st-attention-tmt-${record.createdAt.slice(0, 10)}.csv`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -2970,7 +2985,15 @@
     }
 
     serviceWorker.addEventListener("message", (event) => {
-      if (!event.data || event.data.type !== "CACHE_REFRESHED") {
+      if (!event.data) return;
+      if (event.data.type === "CACHE_REFRESH_FAILED" || event.data.error) {
+        state.updateReloading = false;
+        updateOfflineStatus("更新できませんでした");
+        return;
+      }
+      if (event.data.type !== "CACHE_REFRESHED") return;
+      if (!state.updateReloading) {
+        updateOfflineStatus("更新あり");
         return;
       }
       updateOfflineStatus("最新版準備完了");
@@ -2980,10 +3003,10 @@
     });
 
     serviceWorker.addEventListener("controllerchange", () => {
-      if (state.updateReloading) {
+      if (!state.updateReloading) {
+        updateOfflineStatus("更新あり");
         return;
       }
-      state.updateReloading = true;
       window.location.reload();
     });
   }
@@ -3036,6 +3059,10 @@
       updateOfflineStatus("HTTPS接続が必要");
       return;
     }
+    if (!confirmVersionSwitchIfNeeded()) {
+      updateOfflineStatus("更新を保留しました");
+      return;
+    }
 
     updateOfflineStatus("最新版確認中");
     updateAppButton.disabled = true;
@@ -3048,16 +3075,28 @@
       })
       .then((registration) => {
         if (registration.waiting) {
+          state.updateReloading = true;
+          updateOfflineStatus("最新版へ切り替え中");
           registration.waiting.postMessage({ type: "SKIP_WAITING" });
           return;
         }
         if (serviceWorker.controller) {
-          serviceWorker.controller.postMessage({ type: "REFRESH_CACHE" });
-          return;
+          return sendRefreshMessage(serviceWorker.controller).then((message) => {
+            if (!message) return;
+            if (message.error || message.type === "CACHE_REFRESH_FAILED") {
+              throw new Error(message.error || "refresh failed");
+            }
+            state.updateReloading = true;
+            updateOfflineStatus("最新版準備完了");
+            window.setTimeout(() => {
+              window.location.reload();
+            }, 700);
+          });
         }
         updateOfflineStatus("準備完了");
       })
       .catch(() => {
+        state.updateReloading = false;
         updateOfflineStatus("確認できません");
       });
 
@@ -3070,6 +3109,28 @@
           updateAppButton.disabled = false;
         }, 700);
       });
+  }
+
+  function sendRefreshMessage(worker) {
+    return new Promise((resolve) => {
+      const channel = new MessageChannel();
+      const timeoutId = window.setTimeout(() => resolve({
+        type: "CACHE_REFRESH_FAILED",
+        error: "timeout",
+      }), 7000);
+      channel.port1.onmessage = (event) => {
+        window.clearTimeout(timeoutId);
+        resolve(event.data);
+      };
+      worker.postMessage({ type: "REFRESH_CACHE" }, [channel.port2]);
+    });
+  }
+
+  function confirmVersionSwitchIfNeeded() {
+    if (!state.running && !state.grid.running && !state.tmt.running) {
+      return true;
+    }
+    return confirm("訓練中です。最新版へ切り替えると現在の訓練は中断されます。続行しますか。");
   }
 
   function withTimeout(promise, timeoutMs) {
@@ -3400,7 +3461,10 @@
     if (record.userId && record.results.length) {
       const records = readStoredRecords();
       records.unshift(record);
-      writeStoredRecords(records.slice(0, 300));
+      if (!writeStoredRecords(records)) {
+        state.currentRecord = record;
+        return record;
+      }
     }
 
     state.currentRecord = record;
@@ -3418,7 +3482,158 @@
   }
 
   function writeStoredRecords(records) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    return writeHistoryRecords(STORAGE_KEY, records, "移動刺激選択反応履歴");
+  }
+
+  function writeHistoryRecords(key, records, label) {
+    const limitedRecords = confirmAndLimitHistory(records, label);
+    if (!limitedRecords) {
+      return false;
+    }
+    return writeLimitedHistoryRecords(key, limitedRecords);
+  }
+
+  function writeLimitedHistoryRecords(key, records) {
+    try {
+      localStorage.setItem(key, JSON.stringify(records));
+    } catch {
+      alert("保存できませんでした。バックアップを書き出してください。");
+      return false;
+    }
+    return true;
+  }
+
+  function confirmAndLimitHistory(records, label) {
+    if (records.length > HISTORY_LIMIT) {
+      const removeCount = records.length - HISTORY_LIMIT;
+      const ok = confirm(`${label}が保存上限の${HISTORY_LIMIT}件を超えています。古い${removeCount}件を削除して保存します。削除前にバックアップを書き出してください。続行しますか。`);
+      if (!ok) return null;
+    } else if (records.length >= HISTORY_WARN_LIMIT) {
+      alert(`${label}が保存上限の9割に達しています。バックアップを書き出してください。`);
+    }
+    return records.slice(0, HISTORY_LIMIT);
+  }
+
+  function exportAttentionBackup() {
+    const motion = readStoredRecords();
+    const grid = readGridStoredRecords();
+    const tmt = readTmtStoredRecords();
+    if (!motion.length && !grid.length && !tmt.length) {
+      alert("書き出す履歴がありません。");
+      return;
+    }
+    const backup = {
+      app: "ST注意訓練",
+      version: ATTENTION_BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      records: {
+        motion,
+        grid,
+        tmt,
+      },
+    };
+    downloadJson(backup, `st-attention-backup-${new Date().toISOString().slice(0, 10)}.json`);
+  }
+
+  function importAttentionBackup(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      try {
+        const payload = JSON.parse(String(reader.result || "{}"));
+        const imported = normalizeAttentionBackup(payload);
+        const totalImported = imported.motion.length + imported.grid.length + imported.tmt.length;
+        if (!totalImported) {
+          alert("読み込める注意訓練履歴が見つかりませんでした。");
+          return;
+        }
+
+        const mergedMotion = mergeHistoryRecords(readStoredRecords(), imported.motion);
+        const mergedGrid = mergeHistoryRecords(readGridStoredRecords(), imported.grid);
+        const mergedTmt = mergeHistoryRecords(readTmtStoredRecords(), imported.tmt);
+        const preparedMotion = confirmAndLimitHistory(mergedMotion, "移動刺激選択反応履歴");
+        const preparedGrid = preparedMotion ? confirmAndLimitHistory(mergedGrid, "視覚探索グリッド履歴") : null;
+        const preparedTmt = preparedGrid ? confirmAndLimitHistory(mergedTmt, "TMT風順序探索履歴") : null;
+        if (!preparedMotion || !preparedGrid || !preparedTmt) return;
+
+        if (
+          !writeLimitedHistoryRecords(STORAGE_KEY, preparedMotion) ||
+          !writeLimitedHistoryRecords(GRID_STORAGE_KEY, preparedGrid) ||
+          !writeLimitedHistoryRecords(TMT_STORAGE_KEY, preparedTmt)
+        ) {
+          return;
+        }
+        renderSetupHistory();
+        alert(`${totalImported}件の履歴を読み込みました。`);
+      } catch {
+        alert("読み込みに失敗しました。ファイル形式を確認してください。");
+      }
+    });
+    reader.readAsText(file);
+  }
+
+  function normalizeAttentionBackup(payload) {
+    const records = payload && typeof payload === "object" ? payload.records || payload : {};
+    return {
+      motion: normalizeHistoryList(records.motion || records.moving || records[STORAGE_KEY], "motion"),
+      grid: normalizeHistoryList(records.grid || records[GRID_STORAGE_KEY], "grid"),
+      tmt: normalizeHistoryList(records.tmt || records[TMT_STORAGE_KEY], "tmt"),
+    };
+  }
+
+  function normalizeHistoryList(records, prefix) {
+    if (!Array.isArray(records)) return [];
+    return records.map((record) => normalizeHistoryRecord(record, prefix)).filter(Boolean);
+  }
+
+  function normalizeHistoryRecord(record, prefix) {
+    if (!record || typeof record !== "object" || !Array.isArray(record.results)) return null;
+    const normalized = {
+      ...structuredCloneSafe(record),
+      recordId: sanitizeHistoryRecordId(record.recordId, prefix),
+      userId: typeof record.userId === "string" ? record.userId.slice(0, 80) : "",
+      createdAt: sanitizeHistoryDate(record.createdAt),
+      settings: record.settings && typeof record.settings === "object" ? structuredCloneSafe(record.settings) : {},
+      results: record.results.filter((result) => result && typeof result === "object").map((result) => ({ ...result })),
+    };
+    if (Array.isArray(record.items)) {
+      normalized.items = record.items.filter((item) => item && typeof item === "object").map((item) => ({ ...item }));
+    }
+    if (Number.isFinite(Number(record.totalTimeMs))) {
+      normalized.totalTimeMs = Number(record.totalTimeMs);
+    }
+    return normalized;
+  }
+
+  function sanitizeHistoryRecordId(recordId, prefix) {
+    if (typeof recordId === "string" && recordId.trim()) return recordId.slice(0, 120);
+    return `${prefix}-${createRecordId()}`;
+  }
+
+  function sanitizeHistoryDate(value) {
+    if (typeof value === "string" && !Number.isNaN(Date.parse(value))) return value;
+    return new Date().toISOString();
+  }
+
+  function mergeHistoryRecords(current, imported) {
+    const byId = new Map();
+    [...current, ...imported].forEach((record) => byId.set(record.recordId || createRecordId(), record));
+    return [...byId.values()].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  function downloadJson(payload, filename) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
   }
 
   function getRecordsForUser(userId) {
@@ -3480,7 +3695,7 @@
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `st-attention-training-${record.userId || "no-id"}-${record.createdAt.slice(0, 10)}.csv`;
+    anchor.download = `st-attention-training-${record.createdAt.slice(0, 10)}.csv`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -3671,11 +3886,16 @@
   }
 
   function escapeHtml(value) {
-    return value
+    return String(value)
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
+  }
+
+  function structuredCloneSafe(value) {
+    if (typeof structuredClone === "function") return structuredClone(value);
+    return JSON.parse(JSON.stringify(value));
   }
 })();

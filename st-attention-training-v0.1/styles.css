@@ -617,6 +617,18 @@ input[type="range"] {
   line-height: 1.55;
 }
 
+.storage-note {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
 .settings-actions {
   grid-column: 1 / -1;
   display: flex;

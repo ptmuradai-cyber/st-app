@@ -1,5 +1,7 @@
 const STORAGE_KEY = "catr-ipad-assessments-v1";
 const BACKUP_VERSION = 1;
+const STORAGE_LIMIT = 300;
+const STORAGE_WARN_LIMIT = Math.floor(STORAGE_LIMIT * 0.9);
 const VERSION_INFO = window.CATR_APP_VERSION || {
   version: "0.1.0-local-dev",
   label: "v0.1 local",
@@ -259,6 +261,11 @@ function refreshAppShell() {
     flashButton(button, "確認不可");
     return;
   }
+  if (!confirmReloadIfUnsaved()) {
+    updateOfflineStatus("更新を保留しました");
+    flashButton(button, "保留");
+    return;
+  }
 
   updateOfflineStatus("最新版確認中");
   button.disabled = true;
@@ -272,17 +279,29 @@ function refreshAppShell() {
     })
     .then((registration) => {
       if (registration.waiting) {
+        state.updateReloading = true;
+        updateOfflineStatus("最新版へ切り替え中");
         registration.waiting.postMessage({ type: "SKIP_WAITING" });
         return;
       }
       if (serviceWorker.controller) {
-        serviceWorker.controller.postMessage({ type: "REFRESH_CACHE" });
-        return;
+        return sendRefreshMessage(serviceWorker.controller).then((message) => {
+          if (!message) return;
+          if (message.error || message.type === "CACHE_REFRESH_FAILED") {
+            throw new Error(message.error || "refresh failed");
+          }
+          state.updateReloading = true;
+          updateOfflineStatus("最新版準備完了");
+          window.setTimeout(() => {
+            window.location.reload();
+          }, 700);
+        });
       }
       updateOfflineStatus("準備完了");
       flashButton(button, "最新版");
     })
     .catch(() => {
+      state.updateReloading = false;
       updateOfflineStatus("確認できません");
       flashButton(button, "確認不可");
     })
@@ -314,6 +333,42 @@ function checkMacServerForUpdate() {
     if (timeout) window.clearTimeout(timeout);
     throw error;
   });
+}
+
+function sendRefreshMessage(worker) {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    const timeoutId = window.setTimeout(() => resolve({
+      type: "CACHE_REFRESH_FAILED",
+      error: "timeout",
+    }), 7000);
+    channel.port1.onmessage = (event) => {
+      window.clearTimeout(timeoutId);
+      resolve(event.data);
+    };
+    worker.postMessage({ type: "REFRESH_CACHE" }, [channel.port2]);
+  });
+}
+
+function confirmReloadIfUnsaved() {
+  if (!hasUnsavedAssessment()) return true;
+  return confirm("入力途中の内容が保存されていません。最新版へ切り替えると入力中の内容が消える可能性があります。続行しますか。");
+}
+
+function hasUnsavedAssessment() {
+  if (state.readOnly) return false;
+  const defaultDate = todayString();
+  const hasMetaInput = Boolean(
+    state.activeRecordId ||
+    state.meta.patientId ||
+    state.meta.patientAge ||
+    (state.meta.testDate && state.meta.testDate !== defaultDate),
+  );
+  const hasValues = Object.values(state.values).some((value) => value !== "" && value != null);
+  const hasSources = Object.values(state.sources).some((sourceMap) =>
+    sourceMap && Object.values(sourceMap).some((value) => value !== "" && value != null),
+  );
+  return hasMetaInput || hasValues || hasSources;
 }
 
 function renderAll() {
@@ -896,7 +951,9 @@ function saveCurrent() {
   } else {
     records.unshift(record);
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0, 100)));
+  if (!writeRecords(records, "CAT-R履歴")) {
+    return;
+  }
   clearCurrentAssessment();
   flashSaveButton();
 }
@@ -1007,7 +1064,9 @@ function loadRecord(id) {
 
 function deleteRecord(id) {
   const records = loadRecords().filter((entry) => entry.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  if (!writeRecords(records, "CAT-R履歴")) {
+    return;
+  }
   if (state.activeRecordId === id) {
     clearCurrentAssessment();
     return;
@@ -1018,7 +1077,12 @@ function deleteRecord(id) {
 
 function clearAllRecords() {
   if (!confirm("保存済みデータをすべて削除しますか。")) return;
-  localStorage.removeItem(STORAGE_KEY);
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    alert("保存できませんでした。バックアップを書き出してください。");
+    return;
+  }
   clearCurrentAssessment();
 }
 
@@ -1063,7 +1127,9 @@ function importRecords(event) {
 
       const current = loadRecords();
       const merged = mergeRecords(current, imported);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.slice(0, 200)));
+      if (!writeRecords(merged, "CAT-R履歴")) {
+        return;
+      }
       renderSummary();
       renderRecords();
       alert(`${imported.length}件のデータを読み込みました。`);
@@ -1078,21 +1144,120 @@ function normalizeImportedRecords(payload) {
   const records = Array.isArray(payload) ? payload : payload.records;
   if (!Array.isArray(records)) return [];
   return records
-    .filter((record) => record && typeof record === "object" && record.meta && record.values)
-    .map((record) => ({
-      id: record.id || (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
-      savedAt: record.savedAt || new Date().toISOString(),
-      meta: { ...record.meta },
-      values: { ...record.values },
-      sources: structuredCloneSafe(record.sources || {}),
-      valueOrigins: { ...(record.valueOrigins || {}) },
-    }));
+    .map(normalizeImportedRecord)
+    .filter(Boolean);
+}
+
+function normalizeImportedRecord(record) {
+  if (!record || typeof record !== "object") return null;
+  if (!record.meta || typeof record.meta !== "object") return null;
+  if (!record.values || typeof record.values !== "object") return null;
+
+  const values = sanitizeImportedValues(record.values);
+  const sources = sanitizeImportedSources(record.sources);
+  const valueOrigins = sanitizeImportedValueOrigins(record.valueOrigins, values, sources);
+  const meta = sanitizeImportedMeta(record.meta);
+
+  return {
+    id: sanitizeRecordId(record.id),
+    savedAt: sanitizeIsoString(record.savedAt) || new Date().toISOString(),
+    updatedAt: sanitizeIsoString(record.updatedAt) || sanitizeIsoString(record.savedAt) || new Date().toISOString(),
+    meta,
+    values,
+    sources,
+    valueOrigins,
+  };
+}
+
+function sanitizeImportedMeta(meta) {
+  const age = toNumber(meta.patientAge);
+  return {
+    patientId: typeof meta.patientId === "string" ? meta.patientId.slice(0, 80) : "",
+    patientAge: age != null && age >= 0 && age <= 120 ? String(age) : "",
+    testDate: isDateString(meta.testDate) ? meta.testDate : todayString(),
+  };
+}
+
+function sanitizeImportedValues(values) {
+  return Object.entries(values).reduce((safe, [fieldId, value]) => {
+    const field = fieldById[fieldId];
+    const number = toNumber(value);
+    if (!field || number == null) return safe;
+    if (field.min != null && number < field.min) return safe;
+    if (field.max != null && number > field.max) return safe;
+    safe[fieldId] = field.unit === "%" ? percentValue(number).toFixed(1) : String(number);
+    return safe;
+  }, {});
+}
+
+function sanitizeImportedSources(sources) {
+  if (!sources || typeof sources !== "object") return {};
+  return Object.entries(sources).reduce((safe, [fieldId, sourceValues]) => {
+    const field = fieldById[fieldId];
+    if (!field || !Array.isArray(field.sources) || !sourceValues || typeof sourceValues !== "object") return safe;
+    const sourceMap = {};
+    field.sources.forEach((source) => {
+      const number = toNumber(sourceValues[source.key]);
+      if (number == null) return;
+      if (source.min != null && number < source.min) return;
+      sourceMap[source.key] = String(number);
+    });
+    if (Object.keys(sourceMap).length) safe[fieldId] = sourceMap;
+    return safe;
+  }, {});
+}
+
+function sanitizeImportedValueOrigins(valueOrigins, values, sources) {
+  if (!valueOrigins || typeof valueOrigins !== "object") return {};
+  return Object.entries(valueOrigins).reduce((safe, [fieldId, origin]) => {
+    if (!fieldById[fieldId]) return safe;
+    if (!values[fieldId] && !sources[fieldId]) return safe;
+    if (origin === "manual" || origin === "auto") safe[fieldId] = origin;
+    return safe;
+  }, {});
+}
+
+function sanitizeRecordId(id) {
+  if (typeof id === "string" && id.trim()) return id.slice(0, 120);
+  return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+}
+
+function sanitizeIsoString(value) {
+  if (typeof value !== "string") return "";
+  return Number.isNaN(Date.parse(value)) ? "" : value;
+}
+
+function isDateString(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
 function mergeRecords(current, imported) {
   const byId = new Map();
   [...imported, ...current].forEach((record) => byId.set(record.id, record));
   return [...byId.values()].sort((a, b) => Date.parse(b.savedAt || "") - Date.parse(a.savedAt || ""));
+}
+
+function writeRecords(records, label) {
+  const limitedRecords = confirmAndLimitRecords(records, label);
+  if (!limitedRecords) return false;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(limitedRecords));
+  } catch {
+    alert("保存できませんでした。バックアップを書き出してください。");
+    return false;
+  }
+  return true;
+}
+
+function confirmAndLimitRecords(records, label) {
+  if (records.length > STORAGE_LIMIT) {
+    const removeCount = records.length - STORAGE_LIMIT;
+    const ok = confirm(`${label}が保存上限の${STORAGE_LIMIT}件を超えています。古い${removeCount}件を削除して保存します。削除前にバックアップを書き出してください。続行しますか。`);
+    if (!ok) return null;
+  } else if (records.length >= STORAGE_WARN_LIMIT) {
+    alert(`${label}が保存上限の9割に達しています。バックアップを書き出してください。`);
+  }
+  return records.slice(0, STORAGE_LIMIT);
 }
 
 function printReport() {
@@ -1310,21 +1475,29 @@ function setupServiceWorkerMessages() {
 
   serviceWorker.addEventListener("message", (event) => {
     if (!event.data) return;
+    if (event.data.type === "CACHE_REFRESH_FAILED" || event.data.error) {
+      state.updateReloading = false;
+      updateOfflineStatus("更新できませんでした");
+      return;
+    }
     if (event.data.type === "CACHE_REFRESHED") {
+      if (!state.updateReloading) {
+        updateOfflineStatus("更新あり");
+        return;
+      }
       updateOfflineStatus("最新版準備完了");
       window.setTimeout(() => {
         window.location.reload();
       }, 700);
       return;
     }
-    if (event.data.type === "CACHE_REFRESH_FAILED") {
-      updateOfflineStatus("確認できません");
-    }
   });
 
   serviceWorker.addEventListener("controllerchange", () => {
-    if (state.updateReloading) return;
-    state.updateReloading = true;
+    if (!state.updateReloading) {
+      updateOfflineStatus("更新あり");
+      return;
+    }
     window.location.reload();
   });
 }

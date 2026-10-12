@@ -4,7 +4,7 @@ const VERSION_INFO = self.ST_SUITE_VERSION || {
   version: "1.0.0-local",
 };
 const CACHE_PREFIX = "st-app-suite-";
-const SERVICE_WORKER_BUILD = "icon-png-20261005-1";
+const SERVICE_WORKER_BUILD = "storage-update-20261012-1";
 const CACHE_NAME = `${CACHE_PREFIX}${VERSION_INFO.version}-${SERVICE_WORKER_BUILD}`;
 const ASSETS = [
   "./",
@@ -35,7 +35,6 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(refreshCache());
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -67,7 +66,7 @@ self.addEventListener("message", (event) => {
           version: VERSION_INFO.version,
         }))
         .catch((error) => reply(event, {
-          type: "CACHE_REFRESHED",
+          type: "CACHE_REFRESH_FAILED",
           error: error && error.message ? error.message : "refresh failed",
         })),
     );
@@ -80,22 +79,40 @@ self.addEventListener("fetch", (event) => {
 });
 
 async function refreshCache() {
-  const cache = await caches.open(CACHE_NAME);
-  await Promise.all(
-    ASSETS.map(async (asset) => {
+  const tempCacheName = `${CACHE_NAME}-pending-${Date.now()}`;
+  const tempCache = await caches.open(tempCacheName);
+  const cacheKeys = [];
+
+  try {
+    for (const asset of ASSETS) {
       const url = new URL(asset, self.location.href).toString();
       const response = await fetchWithTimeout(url, { cache: "reload" });
-      if (isCacheable(response)) {
-        await cache.put(getCacheKey(url), response.clone());
+      if (!isCacheable(response)) {
+        throw new Error(`cache failed: ${asset}`);
       }
-    }),
-  );
+      const key = getCacheKey(url);
+      cacheKeys.push(key);
+      await tempCache.put(key, response.clone());
+    }
+
+    await caches.delete(CACHE_NAME);
+    const cache = await caches.open(CACHE_NAME);
+    await Promise.all(cacheKeys.map(async (key) => {
+      const cached = await tempCache.match(key);
+      if (!cached) {
+        throw new Error(`cache copy failed: ${key}`);
+      }
+      await cache.put(key, cached);
+    }));
+  } finally {
+    await caches.delete(tempCacheName);
+  }
 }
 
 async function cacheFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   const cacheKey = getCacheKey(request.url);
-  const cached = await caches.match(request) || await caches.match(cacheKey);
+  const cached = await cache.match(request) || await cache.match(cacheKey);
   if (cached) return cached;
 
   try {
@@ -106,7 +123,7 @@ async function cacheFirst(request) {
     return response;
   } catch (error) {
     if (request.mode === "navigate") {
-      return caches.match(getCacheKey("./index.html"));
+      return cache.match(getCacheKey("./index.html"));
     }
     throw error;
   }
@@ -124,11 +141,7 @@ function reply(event, message) {
 
 function shouldDeleteCache(key) {
   if (key === CACHE_NAME) return false;
-  return (
-    key.startsWith(CACHE_PREFIX) ||
-    key.startsWith("st-attention-training-") ||
-    key.startsWith("catr-input-")
-  );
+  return key.startsWith(CACHE_PREFIX);
 }
 
 function getCacheKey(value) {

@@ -66,7 +66,17 @@
     if (!serviceWorker) return;
 
     serviceWorker.addEventListener("message", (event) => {
-      if (!event.data || event.data.type !== "CACHE_REFRESHED") return;
+      if (!event.data) return;
+      if (event.data.type === "CACHE_REFRESH_FAILED" || event.data.error) {
+        state.updateReloading = false;
+        updateOfflineStatus("更新できませんでした");
+        return;
+      }
+      if (event.data.type !== "CACHE_REFRESHED") return;
+      if (!state.updateReloading) {
+        updateOfflineStatus("更新あり");
+        return;
+      }
       updateOfflineStatus("最新版準備完了");
       window.setTimeout(() => {
         window.location.reload();
@@ -74,8 +84,10 @@
     });
 
     serviceWorker.addEventListener("controllerchange", () => {
-      if (state.updateReloading) return;
-      state.updateReloading = true;
+      if (!state.updateReloading) {
+        updateOfflineStatus("更新あり");
+        return;
+      }
       updateOfflineStatus("最新版準備完了");
       window.setTimeout(() => {
         window.location.reload();
@@ -152,7 +164,13 @@
         return registration.update().then(() => registration);
       })
       .then((registration) => {
-        const worker = registration.waiting || registration.active || serviceWorker.controller;
+        if (registration.waiting) {
+          state.updateReloading = true;
+          updateOfflineStatus("最新版へ切り替え中");
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+          return null;
+        }
+        const worker = registration.active || serviceWorker.controller;
         if (!worker) {
           updateOfflineStatus("準備完了");
           return null;
@@ -164,11 +182,18 @@
           throw new Error(message.error);
         }
         updateOfflineStatus("最新版準備完了");
+        if (message) {
+          state.updateReloading = true;
+          window.setTimeout(() => {
+            window.location.reload();
+          }, 700);
+        }
         if (button) {
           button.textContent = "最新版";
         }
       })
       .catch(() => {
+        state.updateReloading = false;
         updateOfflineStatus("確認できません");
       });
 
@@ -189,7 +214,10 @@
   function sendRefreshMessage(worker) {
     return new Promise((resolve) => {
       const channel = new MessageChannel();
-      const timeoutId = window.setTimeout(() => resolve(null), 7000);
+      const timeoutId = window.setTimeout(() => resolve({
+        type: "CACHE_REFRESH_FAILED",
+        error: "timeout",
+      }), 7000);
       channel.port1.onmessage = (event) => {
         window.clearTimeout(timeoutId);
         resolve(event.data);

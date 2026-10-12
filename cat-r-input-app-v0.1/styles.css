@@ -614,6 +614,11 @@ td.range-cell {
   line-height: 1.5;
 }
 
+.storage-note {
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+
 .small-button {
   min-height: 38px;
   border: 1px solid var(--line);
