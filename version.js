@@ -1,8 +1,1 @@
-(function (root) {
-  "use strict";
-
-  root.ST_SUITE_VERSION = {
-    version: "1.0.11-storage-update-20261012-1",
-    label: "v1.0.11 保存・更新安全化 2026.10.12",
-  };
-})(typeof self !== "undefined" ? self : window);
+(function(root){root.ST_SUITE_VERSION={"version": "1.3.0-restored-762-catr-records-1", "label": "v1.3.0 絵カード762枚・記録補助 候補"};})(typeof self!=="undefined"?self:globalThis);

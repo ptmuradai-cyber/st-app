@@ -13,66 +13,15 @@
     <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
     <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
     <title>STアプリ</title>
-    <link rel="stylesheet" href="./styles.css?v=st-suite-storage-update-20261012-1">
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="app-header">
-        <div>
-          <p class="eyebrow">STアプリ</p>
-          <h1>メニュー</h1>
-        </div>
-        <div class="status-area" aria-live="polite">
-          <span id="app-version" class="status-pill">v1.0.10</span>
-          <span id="offline-status" class="status-pill">オフライン確認中</span>
-          <button id="update-app-button" type="button" class="secondary-action">最新版を確認</button>
-        </div>
-      </header>
+    <link rel="stylesheet" href="./styles.css?v=workspace-120-review-1">
+  <link rel="stylesheet" href="./clinical-ui.css">
+<link rel="stylesheet" href="./workspace.css"></head>
+  <body data-app="home" data-workspace="v2"><div class="h-app"><aside class="h-rail"><a href="./index.html" class="h-brand" aria-label="STアプリのホームへ">ST</a><span class="h-app-name">STアプリ</span><nav class="h-navigation" aria-label="アプリ内ナビゲーション"><a href="./index.html" aria-current="page">ホーム</a><a href="./st-attention-training-v0.1/index.html?view=history">訓練履歴</a></nav><div class="h-rail-bottom"><span id="offline-status" class="status-pill">オフライン確認中</span><button type="button" class="h-settings-button" data-h-settings>設定・更新</button></div></aside><main class="h-content" id="workspace-content"><div class="app-shell"><header class="h-page-header"><div><p class="eyebrow">WORKSPACE</p><h1>ホーム</h1></div></header><div class="h-home-menu app-menu" aria-label="訓練と評価"><a class="app-card app-card--motion" href="./st-attention-training-v0.1/index.html"><span class="app-card__preview" aria-hidden="true"><svg viewbox="0 0 140 80"><circle cx="24" cy="36" r="9"></circle><rect x="60" y="25" width="20" height="20" rx="3"></rect><path d="M95 45l11-20 11 20z"></path><path d="M22 60h79m-8-7 8 7-8 7" class="icon-line"></path></svg></span><span class="h-menu-sub">3つの課題</span><strong>注意訓練</strong><span class="h-menu-open">開く <span aria-hidden="true">→</span></span></a><a class="app-card app-card--picture" href="./picture-card-training/index.html"><span class="app-card__preview" aria-hidden="true"><svg viewbox="0 0 140 80"><rect x="31" y="12" width="70" height="55" rx="7" class="icon-line"></rect><circle cx="53" cy="31" r="7"></circle><path d="M41 56l17-15 12 9 12-16 12 22z"></path></svg></span><span class="h-menu-sub">呼称訓練・AI画像</span><strong>絵カード</strong><span class="h-menu-open">開く <span aria-hidden="true">→</span></span></a><a class="app-card app-card--catr" href="./cat-r-input-app-v0.1/index.html"><span class="app-card__preview" aria-hidden="true"><svg viewbox="0 0 140 80"><path d="M36 15h63v52H36zM47 28h25M47 39h39M47 51h32" class="icon-line"></path><path d="M82 10v15M75 17h15" class="icon-line"></path></svg></span><span class="h-menu-sub">評価入力</span><strong>CAT-R</strong><span class="h-menu-open">開く <span aria-hidden="true">→</span></span></a></div><section class="h-quick-start"><h2>注意訓練をすぐに始める</h2><a href="./st-attention-training-v0.1/index.html?task=motion">移動刺激<span aria-hidden="true"> →</span></a><a href="./st-attention-training-v0.1/index.html?task=grid">視覚探索<span aria-hidden="true"> →</span></a><a href="./st-attention-training-v0.1/index.html?task=tmt">順序探索<span aria-hidden="true"> →</span></a></section></div></main></div>
+    
 
-      <p class="storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
-
-      <main class="app-menu" aria-label="アプリ一覧">
-        <a class="app-card app-card--attention" href="./st-attention-training-v0.1/index.html">
-          <span class="app-card__preview app-card__preview--attention" aria-hidden="true">
-            <span class="preview-stage">
-              <span class="preview-path preview-path--motion"></span>
-              <span class="preview-shape preview-shape--target"></span>
-              <span class="preview-shape preview-shape--square"></span>
-              <span class="preview-shape preview-shape--triangle"></span>
-              <span class="preview-grid">
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span class="is-active"></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span class="is-marked"></span><span></span>
-              </span>
-            </span>
-          </span>
-          <span class="app-card__tag">訓練</span>
-          <strong>注意障害訓練</strong>
-          <span>移動刺激選択反応、視覚探索グリッド、TMT風順序探索を実施します。</span>
-        </a>
-
-        <a class="app-card app-card--catr" href="./cat-r-input-app-v0.1/index.html">
-          <span class="app-card__preview app-card__preview--catr" aria-hidden="true">
-            <span class="preview-report">
-              <span class="preview-report__header"></span>
-              <span class="preview-report__row"></span>
-              <span class="preview-report__row short"></span>
-              <span class="preview-chart">
-                <span style="--bar: 72%"></span>
-                <span style="--bar: 48%"></span>
-                <span style="--bar: 86%"></span>
-                <span style="--bar: 62%"></span>
-              </span>
-            </span>
-          </span>
-          <span class="app-card__tag">評価入力</span>
-          <strong>CAT-R入力</strong>
-          <span>CAT-Rの結果入力、計算補助、前回比較、記録管理を行います。</span>
-        </a>
-      </main>
-    </div>
-
-    <script src="./version.js?v=st-suite-storage-update-20261012-1"></script>
-    <script src="./app.js?v=st-suite-storage-update-20261012-1"></script>
-  </body>
+    <dialog class="h-settings" id="workspace-settings"><header><h2>設定と更新</h2><button type="button" data-h-close-settings>閉じる</button></header><h2>アプリ情報</h2>      <p class="storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p><span id="app-version">版を確認中</span><button id="update-app-button" type="button" class="secondary-action">最新版を確認</button><section aria-label="個人公開候補の利用案内"><h2>このアプリについて</h2><p>個人制作・無料のST訓練支援アプリです。病院・法人の公式アプリではありません。医療専門職の適切な判断のもとで使用してください。</p><p>絵カードはAI生成画像をSTが内容確認した教材です。制作・公開候補：ptmuradai-cyber。標準化検査や治療効果を保証するものではありません。</p><p>CAT-R入力は非公式の記録・計算補助です。公式の検査用紙・刺激・音源は含みません。自動の正常／異常判定は行いません。検査の実施・採点は正式な資料と手順に従ってください。修正正答率は算出済みの値を手入力します。</p><p>氏名・生年月日・カルテ番号を入力しないでください。履歴は端末内保存で自動送信しません。再配布ライセンス・問い合わせ窓口は未設定です。MIT・CC等を付与していません。</p></section></dialog><script src="./version.js?v=workspace-120-review-1"></script>
+    <script src="./pwa-update.js?v=workspace-120-review-1"></script>
+    <script src="./app.js?v=workspace-120-review-1"></script>
+  <script src="./workspace.js"></script></body>
 </html>
+

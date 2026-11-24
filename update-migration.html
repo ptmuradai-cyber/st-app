@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>STアプリ 更新移行</title>
+<style>body{font:18px system-ui;max-width:760px;margin:32px auto;padding:16px;line-height:1.7}button{font:inherit;padding:12px}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style>
+<h1>STアプリ 更新移行</h1>
+<p>v1.0.11から移行するための入口です。先に履歴をバックアップし、入力を保存・訓練を終了してください。</p>
+<p>この画面では新版を準備するだけで、開いている画面を再読込しません。</p>
+<p>Safariとホーム画面版は、それぞれ更新状態を確認してください。この画面での準備だけで、別の起動形態の更新まで完了したとは判断できません。</p>
+<p id="route-status" role="status">起動経路を確認中</p>
+<button id="prepare">新版の準備を確認</button>
+<p id="status" role="status">未確認</p><pre id="details"></pre>
+<p>準備完了後は、この画面を含むSTアプリの全画面を通常終了してください。その後、ホーム画面のSTアプリを開き直し、更新診断で画面版と稼働版の一致を確認します。準備完了は更新成功を意味しません。</p>
+<p>削除・再インストール・Safariのデータ消去は行わないでください。課題専用の旧workerが検出された場合は、その端末の作業を中止してください。</p>
+<script src="./update-migration.js"></script></html>

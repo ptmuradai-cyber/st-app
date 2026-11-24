@@ -20,21 +20,21 @@ const state = {
 };
 
 const fields = [
-  manual("span_digit_forward", "① Span", "Digit Span", "forward", "桁", 0, 10),
-  manual("span_digit_backward", "① Span", "Digit Span", "backward", "桁", 0, 10),
-  manual("span_tapping_forward", "① Span", "Tapping Span", "forward", "桁", 0, 10),
-  manual("span_tapping_backward", "① Span", "Tapping Span", "backward", "桁", 0, 10),
+  manual("span_digit_forward", "① Span", "Digit Span", "forward", "桁", 0, null),
+  manual("span_digit_backward", "① Span", "Digit Span", "backward", "桁", 0, null),
+  manual("span_tapping_forward", "① Span", "Tapping Span", "forward", "桁", 0, null),
+  manual("span_tapping_backward", "① Span", "Tapping Span", "backward", "桁", 0, null),
 
-  manual("vc_triangle_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 △", "所要時間", "sec.", 0, 210),
+  manual("vc_triangle_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 △", "所要時間", "sec.", 0, null),
   rate("vc_triangle_accuracy", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 △", "正答率", "正答数", "標的数"),
   hitRate("vc_triangle_hit", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 △", "的中率"),
-  manual("vc_symbol_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 ※", "所要時間", "sec.", 0, 210),
+  manual("vc_symbol_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 ※", "所要時間", "sec.", 0, null),
   rate("vc_symbol_accuracy", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 ※", "正答率", "正答数", "標的数"),
   hitRate("vc_symbol_hit", "② Cancellation and Detection", "1) Visual Cancellation Ⓐ 図形 ※", "的中率"),
-  manual("vc_number_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓒ 数字 3", "所要時間", "sec.", 0, 210),
+  manual("vc_number_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓒ 数字 3", "所要時間", "sec.", 0, null),
   rate("vc_number_accuracy", "② Cancellation and Detection", "1) Visual Cancellation Ⓒ 数字 3", "正答率", "正答数", "標的数"),
   hitRate("vc_number_hit", "② Cancellation and Detection", "1) Visual Cancellation Ⓒ 数字 3", "的中率"),
-  manual("vc_kana_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓓ 仮名 か", "所要時間", "sec.", 0, 210),
+  manual("vc_kana_time", "② Cancellation and Detection", "1) Visual Cancellation Ⓓ 仮名 か", "所要時間", "sec.", 0, null),
   rate("vc_kana_accuracy", "② Cancellation and Detection", "1) Visual Cancellation Ⓓ 仮名 か", "正答率", "正答数", "標的数"),
   hitRate("vc_kana_hit", "② Cancellation and Detection", "1) Visual Cancellation Ⓓ 仮名 か", "的中率"),
   rate("auditory_accuracy", "② Cancellation and Detection", "2) Auditory Detection", "正答率", "正答数", "標的数"),
@@ -46,12 +46,12 @@ const fields = [
   rate("pasat_2_accuracy", "④ PASAT", "2秒条件", "正答率", "正答数", "総問題数"),
   rate("pasat_1_accuracy", "④ PASAT", "1秒条件", "正答率", "正答数", "総問題数"),
 
-  manual("cpt_srt_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "SRT課題", "m sec.", 0, 800),
-  manual("cpt_x_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "X課題", "m sec.", 0, 800),
-  manual("cpt_ax_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "AX課題", "m sec.", 0, 800),
-  manual("cpt_srt_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "SRT課題", "回", null, null, { abnormalAt: 4 }),
-  manual("cpt_x_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "X課題", "回", null, null, { abnormalAt: 10 }),
-  manual("cpt_ax_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "AX課題", "回", null, null, { abnormalAt: 11 }),
+  manual("cpt_srt_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "SRT課題", "m sec.", 0, null),
+  manual("cpt_x_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "X課題", "m sec.", 0, null),
+  manual("cpt_ax_rt", "⑤ CPT-2 Continuous Performance Test-2", "平均反応時間", "AX課題", "m sec.", 0, null),
+  manual("cpt_srt_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "SRT課題", "回", null, null),
+  manual("cpt_x_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "X課題", "回", null, null),
+  manual("cpt_ax_error", "⑤ CPT-2 Continuous Performance Test-2", "誤反応", "AX課題", "回", null, null),
   rate("cpt_srt_accuracy", "⑤ CPT-2 Continuous Performance Test-2", "正答率", "SRT課題", "正答数", "標的数"),
   rate("cpt_x_accuracy", "⑤ CPT-2 Continuous Performance Test-2", "正答率", "X課題", "正答数", "標的数"),
   rate("cpt_ax_accuracy", "⑤ CPT-2 Continuous Performance Test-2", "正答率", "AX課題", "正答数", "標的数"),
@@ -123,26 +123,8 @@ function hitRate(id, group, subtest, metric = "的中率") {
   };
 }
 
-function corrected(id, group, subtest, metric) {
-  return {
-    id,
-    group,
-    subtest,
-    metric,
-    unit: "%",
-    min: 0,
-    max: 100,
-    mode: "calculated",
-    calcType: "corrected",
-    rangeLabel: "0〜100 / 定義確認",
-    sources: [
-      { key: "correct", label: "正答数", min: 0 },
-      { key: "falsePositive", label: "誤反応数", min: 0 },
-      { key: "denominator", label: "標的数", min: 1 },
-    ],
-    formulaLabel: "暫定: (正答数 − 誤反応数) ÷ 標的数 × 100",
-    caution: "修正正答率は正式定義確認後に固定してください。",
-  };
+function corrected(id,group,subtest,metric){
+ return {...manual(id,group,subtest,metric,"%",0,100),sources:[{key:"correct",min:0},{key:"falsePositive",min:0},{key:"denominator",min:1}],caution:"正式な手順で算出済みの値を手入力してください。自動計算は行いません。"};
 }
 
 function coefficient(id, group, subtest, metric, meanFieldId) {
@@ -153,7 +135,7 @@ function coefficient(id, group, subtest, metric, meanFieldId) {
     metric,
     unit: "",
     min: 0,
-    max: 30,
+    max: null,
     mode: "calculated",
     calcType: "cv",
     rangeLabel: "0〜30",
@@ -166,7 +148,6 @@ function coefficient(id, group, subtest, metric, meanFieldId) {
 }
 
 function rangeLabel(min, max, extra = {}) {
-  if (extra.abnormalAt != null) return `${extra.abnormalAt}≦異常`;
   if (min != null && max != null) {
     if (max === 800) return "0.0〜800.0";
     return `${min}〜${max}`;
@@ -202,7 +183,6 @@ function initialize() {
   bindActions();
   renderAll();
   initializePwaStatus();
-  registerServiceWorker();
 }
 
 function hydrateDefaultValues() {
@@ -237,7 +217,6 @@ function bindTabs() {
 }
 
 function bindActions() {
-  document.getElementById("refreshButton").addEventListener("click", refreshAppShell);
   document.getElementById("editButton").addEventListener("click", enableRecordEditing);
   document.getElementById("saveButton").addEventListener("click", saveCurrent);
   document.getElementById("printButton").addEventListener("click", printReport);
@@ -251,108 +230,6 @@ function bindActions() {
     const sheet = document.getElementById("printProfileSheet");
     if (sheet) sheet.setAttribute("aria-hidden", "true");
   });
-}
-
-function refreshAppShell() {
-  const serviceWorker = getServiceWorkerApi();
-  const button = document.getElementById("refreshButton");
-  if (!serviceWorker || window.location.protocol === "file:" || !window.isSecureContext) {
-    updateOfflineStatus("HTTPS接続が必要");
-    flashButton(button, "確認不可");
-    return;
-  }
-  if (!confirmReloadIfUnsaved()) {
-    updateOfflineStatus("更新を保留しました");
-    flashButton(button, "保留");
-    return;
-  }
-
-  updateOfflineStatus("最新版確認中");
-  button.disabled = true;
-
-  checkMacServerForUpdate()
-    .then(() => serviceWorker.getRegistration())
-    .then((registration) => registration || serviceWorker.register("./service-worker.js"))
-    .then((registration) => {
-      watchServiceWorkerUpdate(registration);
-      return registration.update().then(() => registration);
-    })
-    .then((registration) => {
-      if (registration.waiting) {
-        state.updateReloading = true;
-        updateOfflineStatus("最新版へ切り替え中");
-        registration.waiting.postMessage({ type: "SKIP_WAITING" });
-        return;
-      }
-      if (serviceWorker.controller) {
-        return sendRefreshMessage(serviceWorker.controller).then((message) => {
-          if (!message) return;
-          if (message.error || message.type === "CACHE_REFRESH_FAILED") {
-            throw new Error(message.error || "refresh failed");
-          }
-          state.updateReloading = true;
-          updateOfflineStatus("最新版準備完了");
-          window.setTimeout(() => {
-            window.location.reload();
-          }, 700);
-        });
-      }
-      updateOfflineStatus("準備完了");
-      flashButton(button, "最新版");
-    })
-    .catch(() => {
-      state.updateReloading = false;
-      updateOfflineStatus("確認できません");
-      flashButton(button, "確認不可");
-    })
-    .finally(() => {
-      window.setTimeout(() => {
-        button.disabled = false;
-      }, 700);
-    });
-}
-
-function checkMacServerForUpdate() {
-  const controller = typeof AbortController === "function" ? new AbortController() : null;
-  const timeout = controller ? window.setTimeout(() => controller.abort(), 4000) : null;
-  const url = `./version.js?catrUpdateCheck=${Date.now()}`;
-
-  return fetch(url, {
-    cache: "no-store",
-    signal: controller?.signal,
-  }).then((response) => {
-    if (timeout) window.clearTimeout(timeout);
-    if (!response.ok) throw new Error("version check failed");
-    return response.text();
-  }).then((text) => {
-    if (!text.includes("CATR_APP_VERSION")) {
-      throw new Error("version marker missing");
-    }
-    return text;
-  }).catch((error) => {
-    if (timeout) window.clearTimeout(timeout);
-    throw error;
-  });
-}
-
-function sendRefreshMessage(worker) {
-  return new Promise((resolve) => {
-    const channel = new MessageChannel();
-    const timeoutId = window.setTimeout(() => resolve({
-      type: "CACHE_REFRESH_FAILED",
-      error: "timeout",
-    }), 7000);
-    channel.port1.onmessage = (event) => {
-      window.clearTimeout(timeoutId);
-      resolve(event.data);
-    };
-    worker.postMessage({ type: "REFRESH_CACHE" }, [channel.port2]);
-  });
-}
-
-function confirmReloadIfUnsaved() {
-  if (!hasUnsavedAssessment()) return true;
-  return confirm("入力途中の内容が保存されていません。最新版へ切り替えると入力中の内容が消える可能性があります。続行しますか。");
 }
 
 function hasUnsavedAssessment() {
@@ -614,13 +491,6 @@ function calculateField(field) {
   if (field.calcType === "rate" || field.calcType === "hitRate") {
     return percent(toNumber(src.correct), toNumber(src.denominator ?? src.responses));
   }
-  if (field.calcType === "corrected") {
-    const correct = toNumber(src.correct);
-    const falsePositive = toNumber(src.falsePositive);
-    const denominator = toNumber(src.denominator);
-    if (correct == null || falsePositive == null || denominator == null || denominator <= 0) return "";
-    return percentValue(clamp(((correct - falsePositive) / denominator) * 100, 0, 100));
-  }
   if (field.calcType === "cv") {
     const sd = toNumber(src.sd);
     const mean = toNumber(state.values[field.meanFieldId]);
@@ -642,11 +512,6 @@ function statusForField(field) {
     return { level: "", label: field.rangeLabel };
   }
 
-  if (field.abnormalAt != null) {
-    return value >= field.abnormalAt
-      ? { level: "bad", label: "異常" }
-      : { level: "ok", label: "正常" };
-  }
 
   if ((field.min != null && value < field.min) || (field.max != null && value > field.max)) {
     return { level: "bad", label: "範囲外" };
@@ -662,15 +527,14 @@ function statusForField(field) {
 
 function renderSummary() {
   const completed = fields.filter((field) => toNumber(getFieldValue(field)) != null).length;
-  const abnormal = fields.filter((field) => field.abnormalAt != null && statusForField(field).level === "bad").length;
   const calculated = fields.filter((field) => field.mode === "calculated" && toNumber(getFieldValue(field)) != null).length;
   const previousRecord = findPreviousRecord();
   const age = toNumber(state.meta.patientAge);
 
   document.getElementById("summaryCards").innerHTML = [
     card(`${completed}/${fields.length}`, "入力済み"),
-    card(ageBand(age), "基準年代"),
-    card(String(abnormal), "CPT-2誤反応 異常"),
+    card(ageBand(age), "年代"),
+    card("実施しません", "正常／異常の自動判定"),
     card(String(calculated), "計算欄入力済み"),
     card(previousRecord ? (previousRecord.meta.testDate || formatDateTime(previousRecord.savedAt)) : "なし", "比較対象"),
     card(state.meta.patientId || "未入力", "利用者ID"),
@@ -768,7 +632,6 @@ function renderImpressionDraft(previousRecord = findPreviousRecord()) {
 function createImpressionDraft(previousRecord = findPreviousRecord()) {
   const completed = fields.filter((field) => toNumber(getFieldValue(field)) != null).length;
   const missing = missingFields();
-  const abnormalFields = fields.filter((field) => field.abnormalAt != null && statusForField(field).level === "bad");
   const outOfRange = fields.filter((field) => statusForField(field).label === "範囲外");
   const lines = [];
 
@@ -781,11 +644,7 @@ function createImpressionDraft(previousRecord = findPreviousRecord()) {
     lines.push("主要入力項目はすべて入力済み。");
   }
 
-  if (abnormalFields.length) {
-    lines.push(`CPT-2誤反応では、${fieldListText(abnormalFields)}で基準を超える反応がみられる。`);
-  } else {
-    lines.push("CPT-2誤反応は、入力範囲内では異常判定に該当する項目を認めない。");
-  }
+  lines.push("正常／異常の自動判定は行っていません。正式な採点資料と専門職の判断で確認してください。");
 
   if (outOfRange.length) {
     lines.push(`入力範囲外の値として、${fieldListText(outOfRange)}を確認。入力値または単位の再確認を推奨。`);
@@ -914,7 +773,6 @@ function comparisonLevel(field, diff) {
 }
 
 function preferredDirection(field) {
-  if (field.abnormalAt != null) return "lower";
   if (field.calcType === "cv") return "lower";
   if (field.metric.includes("所要時間") || field.subtest.includes("平均反応時間")) return "lower";
   if (field.metric.includes("誤反応")) return "lower";
@@ -1277,7 +1135,7 @@ function renderPrintProfileSheet() {
     ["利用者ID", state.meta.patientId || "未入力"],
     ["年齢", state.meta.patientAge ? `${state.meta.patientAge}歳` : ""],
     ["実施日", state.meta.testDate || ""],
-    ["基準年代", ageBand(age) || ""],
+    ["年代", ageBand(age) || ""],
   ];
   const rows = fields.map((field) => {
     const value = displayValueForField(field, getFieldValue(field));
@@ -1296,7 +1154,7 @@ function renderPrintProfileSheet() {
     <div class="print-sheet-header">
       <div>
         <p>CAT-R</p>
-        <h1>プロフィール一覧</h1>
+        <h1>入力結果一覧</h1>
       </div>
       <span>${escapeHtml(APP_VERSION)}</span>
     </div>
@@ -1427,9 +1285,6 @@ function stepForField(field) {
 }
 
 function initializePwaStatus() {
-  updateOfflineStatus();
-  window.addEventListener("online", () => updateOfflineStatus());
-  window.addEventListener("offline", () => updateOfflineStatus());
   setupServiceWorkerMessages();
 }
 
@@ -1470,76 +1325,7 @@ function updateOfflineStatus(message) {
 }
 
 function setupServiceWorkerMessages() {
-  const serviceWorker = getServiceWorkerApi();
-  if (!serviceWorker) return;
-
-  serviceWorker.addEventListener("message", (event) => {
-    if (!event.data) return;
-    if (event.data.type === "CACHE_REFRESH_FAILED" || event.data.error) {
-      state.updateReloading = false;
-      updateOfflineStatus("更新できませんでした");
-      return;
-    }
-    if (event.data.type === "CACHE_REFRESHED") {
-      if (!state.updateReloading) {
-        updateOfflineStatus("更新あり");
-        return;
-      }
-      updateOfflineStatus("最新版準備完了");
-      window.setTimeout(() => {
-        window.location.reload();
-      }, 700);
-      return;
-    }
-  });
-
-  serviceWorker.addEventListener("controllerchange", () => {
-    if (!state.updateReloading) {
-      updateOfflineStatus("更新あり");
-      return;
-    }
-    window.location.reload();
-  });
-}
-
-function registerServiceWorker() {
-  const serviceWorker = getServiceWorkerApi();
-  if (!serviceWorker || window.location.protocol === "file:" || !window.isSecureContext) {
-    updateOfflineStatus();
-    return;
-  }
-  if (isInsideIntegratedStApp()) {
-    updateOfflineStatus();
-    return;
-  }
-
-  serviceWorker.register("./service-worker.js")
-    .then((registration) => {
-      watchServiceWorkerUpdate(registration);
-      return serviceWorker.ready;
-    })
-    .then(() => {
-      updateOfflineStatus();
-    })
-    .catch(() => {
-      updateOfflineStatus("準備できません");
-    });
-}
-
-function watchServiceWorkerUpdate(registration) {
-  registration.addEventListener("updatefound", () => {
-    const worker = registration.installing;
-    if (!worker) return;
-    worker.addEventListener("statechange", () => {
-      if (worker.state === "installed" && getServiceWorkerApi().controller) {
-        updateOfflineStatus("更新あり");
-      }
-    });
-  });
-}
-
-function isInsideIntegratedStApp() {
-  return window.location.pathname.includes("/cat-r-input-app-v0.1/");
+  window.StPwaUpdates.start({buttonId: "refreshButton", statusId: "offlineStatusLabel", isBusy: hasUnsavedAssessment});
 }
 
 initialize();

@@ -5,36 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0f766e">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="ST注意訓練">
+    <meta name="apple-mobile-web-app-title" content="注意訓練">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./icon.svg">
-    <title>ST注意訓練 v2.2.0</title>
-    <link rel="stylesheet" href="./styles.css?v=2.2.0-storage-update-20261012-1">
-  </head>
-  <body>
-    <div class="app-shell">
+    <title>注意訓練</title>
+    <link rel="stylesheet" href="./styles.css?v=workspace-120-review-1">
+  <link rel="stylesheet" href="../clinical-ui.css">
+<link rel="stylesheet" href="../workspace.css"></head>
+  <body data-app="attention" data-workspace="v2"><div class="h-app"><aside class="h-rail"><a href="../index.html" data-suite-home class="h-brand" aria-label="STアプリのホームへ">ST</a><span class="h-app-name">STアプリ</span><nav class="h-navigation" aria-label="アプリ内ナビゲーション"><button type="button" data-h-view="task">課題</button><button type="button" data-h-view="history">履歴</button><button type="button" class="h-task-nav" data-h-task="motion">移動刺激</button><button type="button" class="h-task-nav" data-h-task="grid">視覚探索</button><button type="button" class="h-task-nav" data-h-task="tmt">順序探索</button></nav><div class="h-rail-bottom"><span id="offline-status" class="status-pill">オフライン確認中</span><button type="button" class="h-settings-button" data-h-settings>設定・更新</button></div></aside><main class="h-content" id="workspace-content"><div class="app-shell">
       <section id="home-screen" class="screen is-active" aria-labelledby="home-title">
         <header class="app-header">
           <div>
-            <p class="eyebrow">ST注意訓練</p>
+            <p class="eyebrow">注意訓練</p>
             <h1 id="home-title">課題選択</h1>
           </div>
           <div class="header-tools">
-            <div class="app-status" aria-live="polite">
-              <span id="app-version" class="status-pill">v2.1.9</span>
-              <span id="offline-status" class="status-pill">オフライン確認中</span>
-              <button id="update-app-button" type="button" class="secondary-action compact-action">最新版を確認</button>
-              <button id="attention-export-backup-button" type="button" class="secondary-action compact-action">履歴を書き出し</button>
-              <button id="attention-import-backup-button" type="button" class="secondary-action compact-action">履歴を読み込み</button>
-              <input id="attention-import-backup-file" type="file" accept="application/json,.json" hidden>
-              <a href="../index.html" class="secondary-action compact-action shell-link">STアプリへ</a>
-            </div>
+
           </div>
         </header>
 
-        <p class="storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
+
 
         <main class="task-menu" aria-label="課題一覧">
           <button id="open-motion-task" type="button" class="task-card">
@@ -77,45 +69,55 @@
             <span>数字や数字・かなを順番に選び、探索速度、切り替え、誤反応を記録します。</span>
           </button>
         </main>
+        <details class="ui-history" open><summary>訓練履歴・バックアップ</summary></details>
       </section>
 
-      <section id="setup-screen" class="screen" aria-labelledby="setup-title">
+      <section id="setup-screen" class="screen h-setup" aria-labelledby="setup-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">課題1</p>
             <h1 id="setup-title">移動刺激選択反応</h1>
           </div>
           <div class="header-tools">
-            <button id="motion-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
-            <div class="target-preview" aria-label="現在のターゲット">
-              <span class="target-preview__label">ターゲット</span>
-              <span id="target-preview-mark" class="mark color-red shape-circle" aria-hidden="true"></span>
-            </div>
+            <button id="motion-home-button" type="button" class="secondary-action compact-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
+            
           </div>
         </header>
 
-        <form id="settings-form" class="settings-grid">
-          <fieldset class="settings-panel user-panel">
-            <legend>利用者ID</legend>
-            <label class="login-field">
-              <span>ID</span>
-              <input id="user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
-            </label>
-            <div class="login-actions">
-              <button id="login-button" type="button" class="secondary-action">ログイン</button>
-              <span id="active-user" class="status-pill">ID未入力</span>
-            </div>
-            <label class="datetime-field">
-              <span>訓練日時</span>
-              <span class="datetime-controls">
-                <input id="training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/24" aria-label="訓練日">
-                <input id="training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
-              </span>
-            </label>
-            <button id="set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
-          </fieldset>
+        
 
-          <fieldset class="settings-panel">
+<details class="ui-history h-legacy-setup-history"><summary>実施履歴を見る</summary>        <section class="result-section setup-history" aria-labelledby="setup-history-title">
+          <div class="section-heading">
+            <div>
+              <h3 id="setup-history-title">実施履歴</h3>
+              <p id="setup-history-context" class="result-context">この端末の実施履歴を日時で確認できます</p>
+            </div>
+          </div>
+          <div id="setup-last-summary" class="summary-grid compact-summary" aria-live="polite"></div>
+          <p class="panel-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>訓練日時</th>
+                  <th>試行数</th>
+                  <th>正答率</th>
+                  <th>正反応</th>
+                  <th>見逃し</th>
+                  <th>誤反応</th>
+                  <th>平均反応時間（秒）</th>
+                  <th>確認</th>
+                </tr>
+              </thead>
+              <tbody id="setup-history-results"></tbody>
+            </table>
+          </div>
+        </section></details>
+      <div class="h-config-layout"><aside class="h-config-preview"><span class="h-preview-label">選ぶ図形</span><div class="target-preview" aria-label="現在のターゲット">
+              <span class="target-preview__label">ターゲット</span>
+              <span id="target-preview-mark" class="mark color-red shape-circle" aria-hidden="true"></span>
+            </div></aside><form id="settings-form" class="settings-grid h-config-form"><div class="h-tab-scope h-config-controls"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-motion-basic-tab" data-h-pane-target="basic" aria-controls="h-motion-basic" aria-selected="true" tabindex="0">基本</button><button type="button" role="tab" id="h-motion-display-tab" data-h-pane-target="display" aria-controls="h-motion-display" aria-selected="false" tabindex="-1">表示</button><button type="button" role="tab" id="h-motion-timing-tab" data-h-pane-target="timing" aria-controls="h-motion-timing" aria-selected="false" tabindex="-1">時間</button></div><div class="h-pane" id="h-motion-basic" data-h-pane="basic" data-selected="true" role="tabpanel" aria-labelledby="h-motion-basic-tab"><fieldset class="settings-panel">
             <legend>ターゲット条件</legend>
             <div class="control-block">
               <span class="control-label">色</span>
@@ -155,9 +157,7 @@
               <input id="target-count" type="number" min="1" max="30" step="1" value="10">
               <span id="target-count-total" class="unit wide-unit">回 / 全30回</span>
             </label>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset><fieldset class="settings-panel">
             <legend>選択性注意</legend>
             <label class="range-field">
               <span>同時表示数</span>
@@ -172,9 +172,7 @@
               <input id="simultaneous-target-count" type="number" min="1" max="1" step="1" value="1">
               <span id="simultaneous-target-total" class="unit wide-unit">個 / 全1個</span>
             </label>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset></div><div class="h-pane" id="h-motion-display" data-h-pane="display" data-selected="false" role="tabpanel" aria-labelledby="h-motion-display-tab"><fieldset class="settings-panel">
             <legend>刺激</legend>
             <label class="range-field">
               <span>大きさ</span>
@@ -243,9 +241,17 @@
               <input id="display-duration" type="number" min="0.5" max="5" step="0.1" value="1.8">
               <span class="unit">秒</span>
             </label>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset></div><div class="h-pane" id="h-motion-timing" data-h-pane="timing" data-selected="false" role="tabpanel" aria-labelledby="h-motion-timing-tab"><fieldset class="settings-panel user-panel">
+            <legend>実施日時</legend>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/24" aria-label="訓練日">
+                <input id="training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset><fieldset class="settings-panel">
             <legend>訓練</legend>
             <label class="number-field">
               <span>試行数</span>
@@ -265,41 +271,9 @@
                 <span class="unit">秒</span>
               </label>
             </div>
-          </fieldset>
-
-          <div class="settings-actions">
+          </fieldset></div></div><div class="settings-actions">
             <button type="submit" class="primary-action">訓練開始</button>
-          </div>
-        </form>
-
-        <section class="result-section setup-history" aria-labelledby="setup-history-title">
-          <div class="section-heading">
-            <div>
-              <h3 id="setup-history-title">前回結果・履歴</h3>
-              <p id="setup-history-context" class="result-context">IDを入力してログインすると履歴を確認できます</p>
-            </div>
-          </div>
-          <div id="setup-last-summary" class="summary-grid compact-summary" aria-live="polite"></div>
-          <p class="panel-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>訓練日時</th>
-                  <th>試行数</th>
-                  <th>正答率</th>
-                  <th>正反応</th>
-                  <th>見逃し</th>
-                  <th>誤反応</th>
-                  <th>平均反応時間（秒）</th>
-                  <th>確認</th>
-                </tr>
-              </thead>
-              <tbody id="setup-history-results"></tbody>
-            </table>
-          </div>
-        </section>
-      </section>
+          </div></form></div></section>
 
       <section id="training-screen" class="screen training-screen" aria-labelledby="training-title">
         <header class="training-bar">
@@ -332,24 +306,53 @@
         </div>
       </section>
 
-      <section id="result-screen" class="screen" aria-labelledby="result-title">
+      <section id="result-screen" class="screen h-result" aria-labelledby="result-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">結果</p>
             <h2 id="result-title">訓練結果</h2>
-            <p id="result-context" class="result-context">利用者ID: ID未入力</p>
+            <p id="result-context" class="result-context">実施結果</p>
           </div>
           <div class="result-actions">
-            <button id="result-pdf-button" type="button" class="secondary-action">PDF表示</button>
-            <button id="retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
-            <button id="back-settings-button" type="button" class="secondary-action">設定に戻る</button>
-            <button id="result-home-button" type="button" class="secondary-action">課題選択へ</button>
-          </div>
+            <button id="result-pdf-button" type="button" class="secondary-action">PDF</button>
+            <button id="retry-button" type="button" class="secondary-action">もう一度</button>
+            <button id="back-settings-button" type="button" class="secondary-action">条件変更</button>
+            <button id="result-home-button" type="button" class="secondary-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
+          <button id="download-csv-button" type="button" class="secondary-action">CSV</button></div>
         </header>
 
-        <div id="summary-grid" class="summary-grid" aria-live="polite"></div>
+        
 
-        <section class="result-section guidance-section" aria-labelledby="guidance-title">
+        
+
+        
+
+        
+
+        
+
+        
+      <div class="h-result-layout"><aside class="h-scoreboard"><div id="summary-grid" class="summary-grid" aria-live="polite"></div></aside><div class="h-tab-scope h-result-detail"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-result-screen-map-tab" data-h-pane-target="map" aria-controls="h-result-screen-map" aria-selected="true" tabindex="0">位置・領域</button><button type="button" role="tab" id="h-result-screen-guide-tab" data-h-pane-target="guide" aria-controls="h-result-screen-guide" aria-selected="false" tabindex="-1">サマリー</button><button type="button" role="tab" id="h-result-screen-log-tab" data-h-pane-target="log" aria-controls="h-result-screen-log" aria-selected="false" tabindex="-1">試行</button><button type="button" role="tab" id="h-result-screen-previous-tab" data-h-pane-target="previous" aria-controls="h-result-screen-previous" aria-selected="false" tabindex="-1">比較・履歴</button></div><div class="h-pane" id="h-result-screen-map" data-h-pane="map" data-selected="true" role="tabpanel" aria-labelledby="h-result-screen-map-tab"><section class="result-section" aria-labelledby="region-title">
+          <div class="section-heading">
+            <h3 id="region-title">領域別成績</h3>
+            
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>領域</th>
+                  <th>正反応</th>
+                  <th>見逃し</th>
+                  <th>ターゲット計</th>
+                  <th>正反応率</th>
+                </tr>
+              </thead>
+              <tbody id="region-results"></tbody>
+            </table>
+          </div>
+        </section></div><div class="h-pane" id="h-result-screen-guide" data-h-pane="guide" data-selected="false" role="tabpanel" aria-labelledby="h-result-screen-guide-tab"><section class="result-section guidance-section" aria-labelledby="guidance-title">
           <div class="section-heading">
             <div>
               <h3 id="guidance-title">訓練結果サマリー</h3>
@@ -357,9 +360,27 @@
             </div>
           </div>
           <div id="training-guidance" class="guidance-grid" aria-live="polite"></div>
-        </section>
-
-        <section class="result-section" aria-labelledby="comparison-title">
+        </section></div><div class="h-pane" id="h-result-screen-log" data-h-pane="log" data-selected="false" role="tabpanel" aria-labelledby="h-result-screen-log-tab"><section class="result-section" aria-labelledby="log-title">
+          <div class="section-heading">
+            <h3 id="log-title">試行ログ</h3>
+          </div>
+          <div class="table-wrap log-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>刺激</th>
+                  <th>ターゲット</th>
+                  <th>侵入</th>
+                  <th>領域</th>
+                  <th>結果</th>
+                  <th>反応時間（秒）</th>
+                </tr>
+              </thead>
+              <tbody id="trial-log"></tbody>
+            </table>
+          </div>
+        </section></div><div class="h-pane" id="h-result-screen-previous" data-h-pane="previous" data-selected="false" role="tabpanel" aria-labelledby="h-result-screen-previous-tab"><section class="result-section" aria-labelledby="comparison-title">
           <div class="section-heading">
             <h3 id="comparison-title">前回比較</h3>
           </div>
@@ -376,9 +397,7 @@
               <tbody id="comparison-results"></tbody>
             </table>
           </div>
-        </section>
-
-        <section class="result-section" aria-labelledby="history-title">
+        </section><section class="result-section" aria-labelledby="history-title">
           <div class="section-heading">
             <h3 id="history-title">履歴</h3>
           </div>
@@ -399,84 +418,21 @@
               <tbody id="history-results"></tbody>
             </table>
           </div>
-        </section>
+        </section></div></div></div></section>
 
-        <section class="result-section" aria-labelledby="region-title">
-          <div class="section-heading">
-            <h3 id="region-title">領域別成績</h3>
-            <button id="download-csv-button" type="button" class="secondary-action">CSV保存</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>領域</th>
-                  <th>正反応</th>
-                  <th>見逃し</th>
-                  <th>ターゲット計</th>
-                  <th>正反応率</th>
-                </tr>
-              </thead>
-              <tbody id="region-results"></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="result-section" aria-labelledby="log-title">
-          <div class="section-heading">
-            <h3 id="log-title">試行ログ</h3>
-          </div>
-          <div class="table-wrap log-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>刺激</th>
-                  <th>ターゲット</th>
-                  <th>侵入</th>
-                  <th>領域</th>
-                  <th>結果</th>
-                  <th>反応時間（秒）</th>
-                </tr>
-              </thead>
-              <tbody id="trial-log"></tbody>
-            </table>
-          </div>
-        </section>
-      </section>
-
-      <section id="grid-setup-screen" class="screen" aria-labelledby="grid-setup-title">
+      <section id="grid-setup-screen" class="screen h-setup" aria-labelledby="grid-setup-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">課題2</p>
             <h1 id="grid-setup-title">視覚探索グリッド</h1>
-            <p class="result-context">横7×縦5の35点を使い、能動探索と受動的な注意の向け直しを確認します。</p>
+            <p class="result-context">7 × 5の探索課題</p>
           </div>
-          <button id="grid-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
+          <button id="grid-home-button" type="button" class="secondary-action compact-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
         </header>
 
-        <form id="grid-settings-form" class="settings-grid">
-          <fieldset class="settings-panel user-panel">
-            <legend>利用者ID</legend>
-            <label class="login-field">
-              <span>ID</span>
-              <input id="grid-user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
-            </label>
-            <div class="login-actions">
-              <button id="grid-login-button" type="button" class="secondary-action">ログイン</button>
-              <span id="grid-active-user" class="status-pill">ID未入力</span>
-            </div>
-            <label class="datetime-field">
-              <span>訓練日時</span>
-              <span class="datetime-controls">
-                <input id="grid-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
-                <input id="grid-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
-              </span>
-            </label>
-            <button id="grid-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
-          </fieldset>
-
-          <fieldset class="settings-panel grid-mode-panel">
+        
+      <div class="h-config-layout"><aside class="h-config-preview"><span class="h-preview-label">表示例</span><div class="h-grid-sample" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>7 × 5</strong></aside><form id="grid-settings-form" class="settings-grid h-config-form"><div class="h-tab-scope h-config-controls"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-grid-basic-tab" data-h-pane-target="basic" aria-controls="h-grid-basic" aria-selected="true" tabindex="0">課題</button><button type="button" role="tab" id="h-grid-display-tab" data-h-pane-target="display" aria-controls="h-grid-display" aria-selected="false" tabindex="-1">表示</button><button type="button" role="tab" id="h-grid-timing-tab" data-h-pane-target="timing" aria-controls="h-grid-timing" aria-selected="false" tabindex="-1">時間</button></div><div class="h-pane" id="h-grid-basic" data-h-pane="basic" data-selected="true" role="tabpanel" aria-labelledby="h-grid-basic-tab"><fieldset class="settings-panel grid-mode-panel">
             <legend>課題モード</legend>
             <div class="segmented grid-mode-options" role="radiogroup" aria-label="課題モード">
               <label><input type="radio" name="gridMode" value="active" checked><span>能動探索</span></label>
@@ -486,9 +442,7 @@
               <label><input type="radio" name="gridMode" value="reveal"><span>強調</span></label>
               <label><input type="radio" name="gridMode" value="sequence"><span>順序</span></label>
             </div>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset></div><div class="h-pane" id="h-grid-display" data-h-pane="display" data-selected="false" role="tabpanel" aria-labelledby="h-grid-display-tab"><fieldset class="settings-panel">
             <legend>表示条件</legend>
             <label class="range-field">
               <span>ターゲットの大きさ</span>
@@ -521,9 +475,17 @@
               <input id="grid-timeout" type="number" min="1" max="8" step="0.5" value="3">
               <span class="unit">秒</span>
             </label>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset></div><div class="h-pane" id="h-grid-timing" data-h-pane="timing" data-selected="false" role="tabpanel" aria-labelledby="h-grid-timing-tab"><fieldset class="settings-panel user-panel">
+            <legend>実施日時</legend>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="grid-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
+                <input id="grid-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="grid-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset><fieldset class="settings-panel">
             <legend>訓練量</legend>
             <label class="number-field">
               <span>提示数</span>
@@ -531,13 +493,9 @@
               <span class="unit">個</span>
             </label>
             <p class="panel-note">能動探索・削除・着色では35個すべてを対象にします。受動探索・強調・順序では提示数を調整できます。</p>
-          </fieldset>
-
-          <div class="settings-actions">
+          </fieldset></div></div><div class="settings-actions">
             <button type="submit" class="primary-action">訓練開始</button>
-          </div>
-        </form>
-      </section>
+          </div></form></div></section>
 
       <section id="grid-training-screen" class="screen grid-training-screen" aria-labelledby="grid-training-title">
         <header class="training-bar">
@@ -558,24 +516,36 @@
         </main>
       </section>
 
-      <section id="grid-result-screen" class="screen" aria-labelledby="grid-result-title">
+      <section id="grid-result-screen" class="screen h-result" aria-labelledby="grid-result-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">結果</p>
             <h2 id="grid-result-title">視覚探索グリッド結果</h2>
-            <p id="grid-result-context" class="result-context">利用者ID: ID未入力</p>
+            <p id="grid-result-context" class="result-context">実施結果</p>
           </div>
           <div class="result-actions">
-            <button id="grid-result-pdf-button" type="button" class="secondary-action">PDF表示</button>
-            <button id="grid-retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
-            <button id="grid-back-settings-button" type="button" class="secondary-action">設定に戻る</button>
-            <button id="grid-result-home-button" type="button" class="secondary-action">課題選択へ</button>
-          </div>
+            <button id="grid-result-pdf-button" type="button" class="secondary-action">PDF</button>
+            <button id="grid-retry-button" type="button" class="secondary-action">もう一度</button>
+            <button id="grid-back-settings-button" type="button" class="secondary-action">条件変更</button>
+            <button id="grid-result-home-button" type="button" class="secondary-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
+          <button id="grid-download-csv-button" type="button" class="secondary-action">CSV</button></div>
         </header>
 
-        <div id="grid-summary-grid" class="summary-grid" aria-live="polite"></div>
+        
 
-        <section class="result-section guidance-section" aria-labelledby="grid-guidance-title">
+        
+
+        
+
+        
+      <div class="h-result-layout"><aside class="h-scoreboard"><div id="grid-summary-grid" class="summary-grid" aria-live="polite"></div></aside><div class="h-tab-scope h-result-detail"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-grid-result-screen-map-tab" data-h-pane-target="map" aria-controls="h-grid-result-screen-map" aria-selected="true" tabindex="0">位置・領域</button><button type="button" role="tab" id="h-grid-result-screen-guide-tab" data-h-pane-target="guide" aria-controls="h-grid-result-screen-guide" aria-selected="false" tabindex="-1">サマリー</button><button type="button" role="tab" id="h-grid-result-screen-log-tab" data-h-pane-target="log" aria-controls="h-grid-result-screen-log" aria-selected="false" tabindex="-1">試行</button></div><div class="h-pane" id="h-grid-result-screen-map" data-h-pane="map" data-selected="true" role="tabpanel" aria-labelledby="h-grid-result-screen-map-tab"><section class="result-section" aria-labelledby="grid-map-title">
+          <div class="section-heading">
+            <h3 id="grid-map-title">位置別結果</h3>
+            
+          </div>
+          <div id="grid-result-map" class="grid-result-map"></div>
+        </section></div><div class="h-pane" id="h-grid-result-screen-guide" data-h-pane="guide" data-selected="false" role="tabpanel" aria-labelledby="h-grid-result-screen-guide-tab"><section class="result-section guidance-section" aria-labelledby="grid-guidance-title">
           <div class="section-heading">
             <div>
               <h3 id="grid-guidance-title">訓練結果サマリー</h3>
@@ -583,17 +553,7 @@
             </div>
           </div>
           <div id="grid-guidance" class="guidance-grid" aria-live="polite"></div>
-        </section>
-
-        <section class="result-section" aria-labelledby="grid-map-title">
-          <div class="section-heading">
-            <h3 id="grid-map-title">位置別結果</h3>
-            <button id="grid-download-csv-button" type="button" class="secondary-action">CSV保存</button>
-          </div>
-          <div id="grid-result-map" class="grid-result-map"></div>
-        </section>
-
-        <section class="result-section" aria-labelledby="grid-log-title">
+        </section></div><div class="h-pane" id="h-grid-result-screen-log" data-h-pane="log" data-selected="false" role="tabpanel" aria-labelledby="h-grid-result-screen-log-tab"><section class="result-section" aria-labelledby="grid-log-title">
           <div class="section-heading">
             <h3 id="grid-log-title">反応ログ</h3>
           </div>
@@ -612,41 +572,21 @@
               <tbody id="grid-trial-log"></tbody>
             </table>
           </div>
-        </section>
-      </section>
+        </section></div></div></div></section>
 
-      <section id="tmt-setup-screen" class="screen" aria-labelledby="tmt-setup-title">
+      <section id="tmt-setup-screen" class="screen h-setup" aria-labelledby="tmt-setup-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">課題3</p>
             <h1 id="tmt-setup-title">TMT風順序探索</h1>
-            <p class="result-context">TMTに類似したデジタル課題です。標準検査値としてではなく、訓練・観察の補助として使用します。</p>
+            <p class="result-context">標準検査ではありません。訓練・観察用の課題です。</p>
           </div>
-          <button id="tmt-home-button" type="button" class="secondary-action compact-action">課題選択へ</button>
+          <button id="tmt-home-button" type="button" class="secondary-action compact-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
         </header>
 
-        <form id="tmt-settings-form" class="settings-grid">
-          <fieldset class="settings-panel user-panel">
-            <legend>利用者ID</legend>
-            <label class="login-field">
-              <span>ID</span>
-              <input id="tmt-user-id" type="text" autocomplete="off" maxlength="40" value="" placeholder="例：○F-A.A（電カルID等の個人が特定されるIDは入力しない）" title="入力例：○F-A.A。電カルID等の個人が特定されるIDは入力しないでください。">
-            </label>
-            <div class="login-actions">
-              <button id="tmt-login-button" type="button" class="secondary-action">ログイン</button>
-              <span id="tmt-active-user" class="status-pill">ID未入力</span>
-            </div>
-            <label class="datetime-field">
-              <span>訓練日時</span>
-              <span class="datetime-controls">
-                <input id="tmt-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
-                <input id="tmt-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
-              </span>
-            </label>
-            <button id="tmt-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+        
+      <div class="h-config-layout"><aside class="h-config-preview"><span class="h-preview-label">表示例</span><div class="h-tmt-sample" aria-hidden="true"><b>1</b><span>→</span><b>2</b><span>→</span><b>3</b></div><strong>順番につなぐ</strong></aside><form id="tmt-settings-form" class="settings-grid h-config-form"><div class="h-tab-scope h-config-controls"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-tmt-basic-tab" data-h-pane-target="basic" aria-controls="h-tmt-basic" aria-selected="true" tabindex="0">課題</button><button type="button" role="tab" id="h-tmt-display-tab" data-h-pane-target="display" aria-controls="h-tmt-display" aria-selected="false" tabindex="-1">表示</button><button type="button" role="tab" id="h-tmt-timing-tab" data-h-pane-target="timing" aria-controls="h-tmt-timing" aria-selected="false" tabindex="-1">日時</button></div><div class="h-pane" id="h-tmt-basic" data-h-pane="basic" data-selected="true" role="tabpanel" aria-labelledby="h-tmt-basic-tab"><fieldset class="settings-panel">
             <legend>課題条件</legend>
             <div class="control-block">
               <span class="control-label">種類</span>
@@ -662,9 +602,7 @@
                 <label><input type="radio" name="tmtMode" value="trace"><span>なぞり</span></label>
               </div>
             </div>
-          </fieldset>
-
-          <fieldset class="settings-panel">
+          </fieldset></div><div class="h-pane" id="h-tmt-display" data-h-pane="display" data-selected="false" role="tabpanel" aria-labelledby="h-tmt-display-tab"><fieldset class="settings-panel">
             <legend>表示条件</legend>
             <label class="range-field">
               <span>項目の大きさ</span>
@@ -677,13 +615,19 @@
               <input id="tmt-item-count" type="number" min="8" max="25" step="1" value="25">
               <span class="unit">個</span>
             </label>
-          </fieldset>
-
-          <div class="settings-actions">
+          </fieldset></div><div class="h-pane" id="h-tmt-timing" data-h-pane="timing" data-selected="false" role="tabpanel" aria-labelledby="h-tmt-timing-tab"><fieldset class="settings-panel user-panel">
+            <legend>実施日時</legend>
+            <label class="datetime-field">
+              <span>訓練日時</span>
+              <span class="datetime-controls">
+                <input id="tmt-training-date" type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="2026/09/25" aria-label="訓練日">
+                <input id="tmt-training-time" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="08:30" aria-label="訓練時刻">
+              </span>
+            </label>
+            <button id="tmt-set-current-time-button" type="button" class="secondary-action full-width-action">現在日時を入力</button>
+          </fieldset></div></div><div class="settings-actions">
             <button type="submit" class="primary-action">訓練開始</button>
-          </div>
-        </form>
-      </section>
+          </div></form></div></section>
 
       <section id="tmt-training-screen" class="screen tmt-training-screen" aria-labelledby="tmt-training-title">
         <header class="training-bar">
@@ -701,7 +645,7 @@
 
         <main class="tmt-stage" aria-label="TMT風順序探索">
           <div id="tmt-board" class="tmt-board">
-            <svg id="tmt-line-layer" class="tmt-line-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <svg id="tmt-line-layer" class="tmt-line-layer" viewbox="0 0 100 100" preserveaspectratio="none" aria-hidden="true">
               <polyline id="tmt-connector-line" class="tmt-connector-line" points=""></polyline>
               <polyline id="tmt-trace-line" class="tmt-trace-line" points=""></polyline>
             </svg>
@@ -710,24 +654,36 @@
         </main>
       </section>
 
-      <section id="tmt-result-screen" class="screen" aria-labelledby="tmt-result-title">
+      <section id="tmt-result-screen" class="screen h-result" aria-labelledby="tmt-result-title">
         <header class="app-header">
           <div>
             <p class="eyebrow">結果</p>
             <h2 id="tmt-result-title">TMT風順序探索結果</h2>
-            <p id="tmt-result-context" class="result-context">利用者ID: ID未入力</p>
+            <p id="tmt-result-context" class="result-context">実施結果</p>
           </div>
           <div class="result-actions">
-            <button id="tmt-result-pdf-button" type="button" class="secondary-action">PDF表示</button>
-            <button id="tmt-retry-button" type="button" class="secondary-action">同じ条件でもう一度</button>
-            <button id="tmt-back-settings-button" type="button" class="secondary-action">設定に戻る</button>
-            <button id="tmt-result-home-button" type="button" class="secondary-action">課題選択へ</button>
-          </div>
+            <button id="tmt-result-pdf-button" type="button" class="secondary-action">PDF</button>
+            <button id="tmt-retry-button" type="button" class="secondary-action">もう一度</button>
+            <button id="tmt-back-settings-button" type="button" class="secondary-action">条件変更</button>
+            <button id="tmt-result-home-button" type="button" class="secondary-action">注意訓練一覧</button>
+            <a href="../index.html" data-suite-home class="secondary-action compact-action">ホームへ</a>
+          <button id="tmt-download-csv-button" type="button" class="secondary-action">CSV</button></div>
         </header>
 
-        <div id="tmt-summary-grid" class="summary-grid" aria-live="polite"></div>
+        
 
-        <section class="result-section guidance-section" aria-labelledby="tmt-guidance-title">
+        
+
+        
+
+        
+      <div class="h-result-layout"><aside class="h-scoreboard"><div id="tmt-summary-grid" class="summary-grid" aria-live="polite"></div></aside><div class="h-tab-scope h-result-detail"><div class="h-tabbar" role="tablist" aria-label="表示切替"><button type="button" role="tab" id="h-tmt-result-screen-map-tab" data-h-pane-target="map" aria-controls="h-tmt-result-screen-map" aria-selected="true" tabindex="0">位置・領域</button><button type="button" role="tab" id="h-tmt-result-screen-guide-tab" data-h-pane-target="guide" aria-controls="h-tmt-result-screen-guide" aria-selected="false" tabindex="-1">サマリー</button><button type="button" role="tab" id="h-tmt-result-screen-log-tab" data-h-pane-target="log" aria-controls="h-tmt-result-screen-log" aria-selected="false" tabindex="-1">試行</button></div><div class="h-pane" id="h-tmt-result-screen-map" data-h-pane="map" data-selected="true" role="tabpanel" aria-labelledby="h-tmt-result-screen-map-tab"><section class="result-section" aria-labelledby="tmt-map-title">
+          <div class="section-heading">
+            <h3 id="tmt-map-title">順序マップ</h3>
+            
+          </div>
+          <div id="tmt-result-map" class="tmt-result-map"></div>
+        </section></div><div class="h-pane" id="h-tmt-result-screen-guide" data-h-pane="guide" data-selected="false" role="tabpanel" aria-labelledby="h-tmt-result-screen-guide-tab"><section class="result-section guidance-section" aria-labelledby="tmt-guidance-title">
           <div class="section-heading">
             <div>
               <h3 id="tmt-guidance-title">訓練結果サマリー</h3>
@@ -735,17 +691,7 @@
             </div>
           </div>
           <div id="tmt-guidance" class="guidance-grid" aria-live="polite"></div>
-        </section>
-
-        <section class="result-section" aria-labelledby="tmt-map-title">
-          <div class="section-heading">
-            <h3 id="tmt-map-title">順序マップ</h3>
-            <button id="tmt-download-csv-button" type="button" class="secondary-action">CSV保存</button>
-          </div>
-          <div id="tmt-result-map" class="tmt-result-map"></div>
-        </section>
-
-        <section class="result-section" aria-labelledby="tmt-log-title">
+        </section></div><div class="h-pane" id="h-tmt-result-screen-log" data-h-pane="log" data-selected="false" role="tabpanel" aria-labelledby="h-tmt-result-screen-log-tab"><section class="result-section" aria-labelledby="tmt-log-title">
           <div class="section-heading">
             <h3 id="tmt-log-title">反応ログ</h3>
           </div>
@@ -764,11 +710,21 @@
               <tbody id="tmt-trial-log"></tbody>
             </table>
           </div>
-        </section>
-      </section>
-    </div>
+        </section></div></div></div></section>
+    </div><section class="h-attention-history" id="workspace-history" data-h-view-panel="history"><header class="h-page-header"><h1>訓練履歴</h1><button type="button" data-h-view="task">課題へ戻る</button></header><section class="result-panel" aria-labelledby="all-history-title"><h2 id="all-history-title">訓練履歴</h2><p>実施日時から結果を確認します。同じ利用者の前回とは限りません。</p><button id="refresh-all-history" type="button" class="secondary-action">履歴を再表示</button><div class="table-wrap"><table><thead><tr><th>実施日時</th><th>課題</th><th>旧ID（旧記録のみ）</th><th>実施数</th><th>結果</th></tr></thead><tbody id="all-training-history"></tbody></table></div></section></section></main></div>
+    
 
-    <script src="./version.js?v=2.2.0-storage-update-20261012-1"></script>
-    <script src="./app.js?v=2.2.0-storage-update-20261012-1"></script>
-  </body>
+    <dialog class="h-settings" id="workspace-settings"><header><h2>設定と更新</h2><button type="button" data-h-close-settings>閉じる</button></header><span id="app-version" class="status-pill">v2.1.9</span><p class="storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
+
+              <button id="update-app-button" type="button" class="secondary-action compact-action">最新版を確認</button>
+              <button id="attention-export-backup-button" type="button" class="secondary-action compact-action">履歴を書き出し</button>
+              <button id="attention-import-backup-button" type="button" class="secondary-action compact-action">履歴を読み込み</button>
+              <input id="attention-import-backup-file" type="file" accept="application/json,.json" hidden>
+              <a href="../index.html" class="secondary-action compact-action shell-link">ホームへ</a>
+            <section aria-label="個人公開候補の利用案内"><h2>このアプリについて</h2><p>個人制作・無料のST訓練支援アプリです。病院・法人の公式アプリではありません。医療専門職の適切な判断のもとで使用してください。</p><p>絵カードはAI生成画像をSTが内容確認した教材です。制作・公開候補：ptmuradai-cyber。標準化検査や治療効果を保証するものではありません。</p><p>CAT-R入力は非公式の記録・計算補助です。公式の検査用紙・刺激・音源は含みません。自動の正常／異常判定は行いません。検査の実施・採点は正式な資料と手順に従ってください。修正正答率は算出済みの値を手入力します。</p><p>氏名・生年月日・カルテ番号を入力しないでください。履歴は端末内保存で自動送信しません。再配布ライセンス・問い合わせ窓口は未設定です。MIT・CC等を付与していません。</p></section></dialog><script src="../version.js?v=workspace-120-review-1"></script>
+    <script src="../pwa-update.js?v=workspace-120-review-1"></script>
+    <script src="./version.js?v=workspace-120-review-1"></script>
+    <script src="./app.js?v=workspace-120-review-1"></script>
+  <script src="../workspace.js"></script></body>
 </html>
+

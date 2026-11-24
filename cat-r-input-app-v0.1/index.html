@@ -10,26 +10,26 @@
   <title>CAT-R結果入力</title>
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="manifest" href="./manifest.json">
-  <link rel="stylesheet" href="./styles.css?v=17-storage-update-20261012-1">
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
+  <link rel="stylesheet" href="./styles.css?v=workspace-120-review-1">
+<link rel="stylesheet" href="../clinical-ui.css">
+<link rel="stylesheet" href="../workspace.css"></head>
+<body data-app="catr" data-workspace="v2"><div class="h-app"><aside class="h-rail"><a class="icon-button secondary h-brand" href="../index.html" aria-label="STアプリのホームへ" title="STアプリへ戻る">ST</a><span class="h-app-name">STアプリ</span><nav class="h-navigation" aria-label="アプリ内ナビゲーション"><nav class="tabs" aria-label="表示切替">
+      <button class="tab is-active" data-tab="input" type="button">入力</button>
+      <button class="tab" data-tab="summary" type="button">結果</button>
+      <button class="tab" data-tab="records" type="button">履歴</button>
+    </nav></nav><div class="h-rail-bottom"><span id="offlineStatusLabel">端末保存</span><button type="button" class="h-settings-button" data-h-settings>設定・更新</button></div></aside><main class="h-content" id="workspace-content"><div class="app-shell">
+    <header class="topbar h-page-header">
       <div>
         <p class="eyebrow">CAT-R</p>
-        <h1>成績入力</h1>
+        <h1>CAT-R入力 <small>非公式</small></h1>
         <div class="app-meta" aria-label="アプリ情報">
-          <span id="versionLabel">v0.1.2</span>
-          <span id="offlineStatusLabel">端末保存</span>
+
+          
         </div>
       </div>
       <div class="top-actions">
-        <a class="icon-button secondary" href="../index.html" aria-label="STアプリへ戻る" title="STアプリへ戻る">
-          <span aria-hidden="true">STアプリ</span>
-        </a>
-        <button class="icon-button secondary" type="button" id="refreshButton" aria-label="最新版を確認" title="最新版を確認">
-          <span aria-hidden="true">最新版を確認</span>
-        </button>
+        
+        
         <button class="icon-button secondary is-hidden" type="button" id="editButton" aria-label="編集" title="編集">
           <span aria-hidden="true">編集</span>
         </button>
@@ -42,15 +42,10 @@
       </div>
     </header>
 
-    <nav class="tabs" aria-label="表示切替">
-      <button class="tab is-active" data-tab="input" type="button">入力</button>
-      <button class="tab" data-tab="summary" type="button">結果</button>
-      <button class="tab" data-tab="records" type="button">履歴</button>
-    </nav>
+    
 
-    <main>
-      <section class="panel patient-panel" aria-label="患者情報">
-        <p class="panel-note storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p>
+    <section class="panel patient-panel" aria-label="利用者IDと実施条件">
+        
         <div class="patient-grid">
           <label class="id-field">
             <span>利用者ID</span>
@@ -65,11 +60,12 @@
             <input id="testDate" type="date" tabindex="3">
           </label>
           <label>
-            <span>基準年代</span>
+            <span>年代</span>
             <input id="ageBand" readonly tabindex="-1">
           </label>
         </div>
-      </section>
+      </section><main>
+      
 
       <section class="view is-active" id="inputView">
         <div class="table-wrap" role="region" aria-label="CAT-R入力表">
@@ -90,35 +86,8 @@
       </section>
 
       <section class="view" id="summaryView">
-        <div class="summary-layout">
-          <section class="panel">
-            <h2>結果サマリー</h2>
-            <div id="summaryCards" class="summary-cards"></div>
-          </section>
-          <section class="panel">
-            <h2>入力完了状況</h2>
-            <div id="completionList" class="completion-list"></div>
-          </section>
-          <section class="panel wide">
-            <div class="section-head compact">
-              <h2>入力漏れチェック</h2>
-              <span id="missingBadge" class="status-pill"></span>
-            </div>
-            <div id="missingList" class="missing-list"></div>
-          </section>
-          <section class="panel wide">
-            <h2>前回比較</h2>
-            <div id="comparisonPanel" class="comparison-panel"></div>
-          </section>
-          <section class="panel wide print-keep">
-            <div class="section-head compact">
-              <h2>所見下書き</h2>
-              <button class="text-button" type="button" id="copyImpressionButton">コピー</button>
-            </div>
-            <textarea id="impressionDraft" class="impression-draft" readonly aria-label="所見下書き"></textarea>
-          </section>
-          <section class="panel wide print-profile-panel">
-            <h2>プロフィール一覧</h2>
+        <div class="summary-layout"><section class="panel wide print-profile-panel">
+            <h2>入力結果一覧</h2>
             <div class="result-table-wrap">
               <table class="result-table">
                 <thead>
@@ -135,26 +104,54 @@
               </table>
             </div>
           </section>
-        </div>
+          <section class="panel">
+            <h2>結果サマリー</h2>
+            <div id="summaryCards" class="summary-cards"></div>
+          </section>
+          
+          
+          
+          
+          
+        <details class="h-catr-supplement"><summary>入力確認・比較・所見</summary><section class="panel">
+            <h2>入力完了状況</h2>
+            <div id="completionList" class="completion-list"></div>
+          </section><section class="panel wide">
+            <div class="section-head compact">
+              <h2>入力漏れチェック</h2>
+              <span id="missingBadge" class="status-pill"></span>
+            </div>
+            <div id="missingList" class="missing-list"></div>
+          </section><section class="panel wide">
+            <h2>前回比較</h2>
+            <div id="comparisonPanel" class="comparison-panel"></div>
+          </section><section class="panel wide print-keep">
+            <div class="section-head compact">
+              <h2>所見下書き</h2>
+              <button class="text-button" type="button" id="copyImpressionButton">コピー</button>
+            </div>
+            <textarea id="impressionDraft" class="impression-draft" readonly aria-label="所見下書き"></textarea>
+          </section></details></div>
       </section>
 
       <section class="view" id="recordsView">
         <section class="panel content-panel">
           <div class="section-head">
             <h2>保存済みデータ</h2>
-            <div class="data-actions">
+            
+          </div>
+          <p class="panel-note">履歴はこの端末に保存されます。移すときは書き出し・読み込みを使用してください。</p>
+          <div id="recordList" class="record-list"></div>
+        </section>
+      <details class="h-record-maint"><summary>バックアップ・管理</summary><div class="data-actions">
               <button class="text-button" type="button" id="exportButton">書き出し</button>
               <button class="text-button" type="button" id="importButton">読み込み</button>
               <button class="text-button danger" type="button" id="clearAllButton">全削除</button>
               <input id="importFile" type="file" accept="application/json,.json" hidden>
-            </div>
-          </div>
-          <p class="panel-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。iPadや別ブラウザへ移す場合は、書き出しファイルを使って読み込みます。</p>
-          <div id="recordList" class="record-list"></div>
-        </section>
-      </section>
+            </div></details></section>
     </main>
-  </div>
+  </div></main></div>
+  
 
   <section id="printProfileSheet" class="print-profile-sheet" aria-hidden="true"></section>
 
@@ -166,7 +163,12 @@
     </tr>
   </template>
 
-  <script src="./version.js?v=17-storage-update-20261012-1"></script>
-  <script src="./app.js?v=17-storage-update-20261012-1"></script>
-</body>
+  <dialog class="h-settings" id="workspace-settings"><header><h2>設定と更新</h2><button type="button" data-h-close-settings>閉じる</button></header><span id="versionLabel">v0.1.2</span><p class="panel-note storage-note">データはこの端末のこのアプリ内にのみ保存されます。Safariとホーム画面アプリでは別保存になり、ホーム画面のアイコン削除でその中のデータも消えます。</p><button class="icon-button secondary" type="button" id="refreshButton" aria-label="最新版を確認" title="最新版を確認">
+          <span aria-hidden="true">最新版を確認</span>
+        </button><p class="ui-id-note">氏名・生年月日・カルテ番号は入力しないでください。</p><section aria-label="個人公開候補の利用案内"><h2>このアプリについて</h2><p>個人制作・無料のST訓練支援アプリです。病院・法人の公式アプリではありません。医療専門職の適切な判断のもとで使用してください。</p><p>絵カードはAI生成画像をSTが内容確認した教材です。制作・公開候補：ptmuradai-cyber。標準化検査や治療効果を保証するものではありません。</p><p>CAT-R入力は非公式の記録・計算補助です。公式の検査用紙・刺激・音源は含みません。自動の正常／異常判定は行いません。検査の実施・採点は正式な資料と手順に従ってください。修正正答率は算出済みの値を手入力します。</p><p>氏名・生年月日・カルテ番号を入力しないでください。履歴は端末内保存で自動送信しません。再配布ライセンス・問い合わせ窓口は未設定です。MIT・CC等を付与していません。</p></section></dialog><script src="../version.js?v=workspace-120-review-1"></script>
+    <script src="../pwa-update.js?v=workspace-120-review-1"></script>
+    <script src="./version.js?v=workspace-120-review-1"></script>
+  <script src="./app.js?v=workspace-120-review-1"></script>
+<script src="../workspace.js"></script></body>
 </html>
+

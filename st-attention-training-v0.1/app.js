@@ -105,7 +105,6 @@
   };
 
   const state = {
-    activeUserId: "",
     settings: null,
     running: false,
     trialNumber: 0,
@@ -185,9 +184,6 @@
   const attentionImportBackupButton = $("#attention-import-backup-button");
   const attentionImportBackupFile = $("#attention-import-backup-file");
   const targetPreviewMark = $("#target-preview-mark");
-  const userIdInput = $("#user-id");
-  const loginButton = $("#login-button");
-  const activeUserLabel = $("#active-user");
   const targetCountRange = $("#target-count-range");
   const targetCountInput = $("#target-count");
   const targetCountTotal = $("#target-count-total");
@@ -207,9 +203,6 @@
   const comparisonResults = $("#comparison-results");
   const historyResults = $("#history-results");
   const gridSettingsForm = $("#grid-settings-form");
-  const gridUserIdInput = $("#grid-user-id");
-  const gridLoginButton = $("#grid-login-button");
-  const gridActiveUserLabel = $("#grid-active-user");
   const gridTrainingDateInput = $("#grid-training-date");
   const gridTrainingTimeInput = $("#grid-training-time");
   const gridSetCurrentTimeButton = $("#grid-set-current-time-button");
@@ -230,9 +223,6 @@
   const gridTrialLog = $("#grid-trial-log");
   const gridDownloadCsvButton = $("#grid-download-csv-button");
   const tmtSettingsForm = $("#tmt-settings-form");
-  const tmtUserIdInput = $("#tmt-user-id");
-  const tmtLoginButton = $("#tmt-login-button");
-  const tmtActiveUserLabel = $("#tmt-active-user");
   const tmtTrainingDateInput = $("#tmt-training-date");
   const tmtTrainingTimeInput = $("#tmt-training-time");
   const tmtSetCurrentTimeButton = $("#tmt-set-current-time-button");
@@ -259,7 +249,6 @@
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
-    restoreActiveUser();
     setTrainingDateTimeToNow();
     setGridTrainingDateTimeToNow();
     setTmtTrainingDateTimeToNow();
@@ -288,30 +277,9 @@
     ["min-interval", "max-interval"].forEach((id) => {
       document.getElementById(id).addEventListener("input", selectCustomSpeed);
     });
-    loginButton.addEventListener("click", applyLogin);
     setCurrentTimeButton.addEventListener("click", setTrainingDateTimeToNow);
-    gridLoginButton.addEventListener("click", applyGridLogin);
     gridSetCurrentTimeButton.addEventListener("click", setGridTrainingDateTimeToNow);
-    tmtLoginButton.addEventListener("click", applyTmtLogin);
     tmtSetCurrentTimeButton.addEventListener("click", setTmtTrainingDateTimeToNow);
-    userIdInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        applyLogin();
-      }
-    });
-    gridUserIdInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        applyGridLogin();
-      }
-    });
-    tmtUserIdInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        applyTmtLogin();
-      }
-    });
     trialCountInput.addEventListener("input", syncTargetCountBounds);
     targetCountRange.addEventListener("input", () => {
       targetCountInput.value = targetCountRange.value;
@@ -343,7 +311,6 @@
     });
     resultPdfButton.addEventListener("click", () => showResultPdf(resultScreen, "移動刺激選択反応", resultPdfButton));
     downloadCsvButton.addEventListener("click", downloadCsv);
-    updateAppButton.addEventListener("click", refreshOfflineApp);
     attentionExportBackupButton.addEventListener("click", exportAttentionBackup);
     attentionImportBackupButton.addEventListener("click", () => attentionImportBackupFile.click());
     attentionImportBackupFile.addEventListener("change", importAttentionBackup);
@@ -420,6 +387,7 @@
       }
       const record = getRecordById(button.dataset.recordId);
       if (record) {
+        state.sessionSaved = true;
         renderResults(record);
         showScreen(resultScreen);
       }
@@ -431,6 +399,7 @@
       }
       const record = getRecordById(button.dataset.recordId);
       if (record) {
+        state.sessionSaved = true;
         renderResults(record);
       }
     });
@@ -464,9 +433,21 @@
     initializePwaStatus();
     syncTargetCountBounds();
     syncSimultaneousTargetBounds();
-    syncUserInputs();
     renderSetupHistory();
-    registerServiceWorker();
+    renderAllHistory();
+    $("#refresh-all-history").addEventListener("click", renderAllHistory);
+    $("#all-training-history").addEventListener("click", openHistoryRecord);
+    const requestedTask = new URLSearchParams(window.location.search).get("task");
+    if (requestedTask === "motion") openMotionSetup();
+    else if (requestedTask === "grid") openGridSetup();
+    else if (requestedTask === "tmt") openTmtSetup();
+    document.querySelectorAll("[data-suite-home]").forEach(link => link.addEventListener("click", event => {
+      if (state.running || state.grid.running || state.tmt.running ||
+          (state.currentRecord && !state.sessionSaved) || (state.grid.currentRecord && !state.grid.sessionSaved) || (state.tmt.currentRecord && !state.tmt.sessionSaved)) {
+        event.preventDefault();
+        alert("訓練を終了し、結果の保存を確認してからSTホームへ戻ってください。");
+      }
+    }));
   }
 
   function connectRangeAndNumber(rangeId, numberId, onManualInput) {
@@ -487,28 +468,16 @@
   }
 
   function openMotionSetup() {
-    syncUserInputs();
     renderSetupHistory();
     showScreen(setupScreen);
   }
 
   function openGridSetup() {
-    syncUserInputs();
     showScreen(gridSetupScreen);
   }
 
   function openTmtSetup() {
-    syncUserInputs();
     showScreen(tmtSetupScreen);
-  }
-
-  function syncUserInputs() {
-    userIdInput.value = state.activeUserId;
-    gridUserIdInput.value = state.activeUserId;
-    tmtUserIdInput.value = state.activeUserId;
-    updateActiveUserLabel();
-    updateGridActiveUserLabel();
-    updateTmtActiveUserLabel();
   }
 
   function applySpeedPreset(presetName) {
@@ -529,75 +498,6 @@
     const formatted = formatSeconds(value);
     document.getElementById(rangeId).value = formatted;
     document.getElementById(numberId).value = formatted;
-  }
-
-  function restoreActiveUser() {
-    state.activeUserId = "";
-    userIdInput.value = "";
-    gridUserIdInput.value = "";
-    tmtUserIdInput.value = "";
-    updateActiveUserLabel();
-    updateGridActiveUserLabel();
-    updateTmtActiveUserLabel();
-  }
-
-  function applyLogin() {
-    state.activeUserId = sanitizeUserId(userIdInput.value);
-    userIdInput.value = state.activeUserId;
-    gridUserIdInput.value = state.activeUserId;
-    tmtUserIdInput.value = state.activeUserId;
-    updateActiveUserLabel();
-    updateGridActiveUserLabel();
-    updateTmtActiveUserLabel();
-    renderSetupHistory();
-  }
-
-  function applyGridLogin() {
-    state.activeUserId = sanitizeUserId(gridUserIdInput.value);
-    userIdInput.value = state.activeUserId;
-    gridUserIdInput.value = state.activeUserId;
-    tmtUserIdInput.value = state.activeUserId;
-    updateActiveUserLabel();
-    updateGridActiveUserLabel();
-    updateTmtActiveUserLabel();
-    renderSetupHistory();
-  }
-
-  function applyTmtLogin() {
-    state.activeUserId = sanitizeUserId(tmtUserIdInput.value);
-    userIdInput.value = state.activeUserId;
-    gridUserIdInput.value = state.activeUserId;
-    tmtUserIdInput.value = state.activeUserId;
-    updateActiveUserLabel();
-    updateGridActiveUserLabel();
-    updateTmtActiveUserLabel();
-    renderSetupHistory();
-  }
-
-  function updateActiveUserLabel() {
-    activeUserLabel.textContent = state.activeUserId
-      ? `ログイン中: ${state.activeUserId}`
-      : "ID未入力";
-  }
-
-  function updateGridActiveUserLabel() {
-    gridActiveUserLabel.textContent = state.activeUserId
-      ? `ログイン中: ${state.activeUserId}`
-      : "ID未入力";
-  }
-
-  function updateTmtActiveUserLabel() {
-    tmtActiveUserLabel.textContent = state.activeUserId
-      ? `ログイン中: ${state.activeUserId}`
-      : "ID未入力";
-  }
-
-  function sanitizeUserId(value) {
-    const normalized = String(value || "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .slice(0, 40);
-    return normalized;
   }
 
   function syncTargetCountBounds() {
@@ -804,7 +704,6 @@
       clamp(readNumber("simultaneous-target-count"), 1, simultaneousCount),
     );
 
-    applyLogin();
     setControlPair("display-duration-range", "display-duration", displayDurationSec);
     $("#min-interval").value = formatSeconds(normalizedMin);
     $("#max-interval").value = formatSeconds(normalizedMax);
@@ -816,7 +715,7 @@
     syncSimultaneousTargetBounds();
 
     return {
-      userId: state.activeUserId,
+      userId: "",
       trainingDateTime: getTrainingDateTimeIso(),
       targetColor: getCheckedValue("targetColor"),
       targetShape: getCheckedValue("targetShape"),
@@ -834,7 +733,6 @@
   }
 
   function readGridSettings() {
-    applyGridLogin();
     const mode = getCheckedValue("gridMode");
     const dotSize = Math.round(clamp(readNumber("grid-dot-size"), 36, 96));
     const blinkSec = clamp(readNumber("grid-blink-sec"), 0.3, 1.6);
@@ -854,7 +752,7 @@
     $("#grid-target-count").value = String(targetCount);
 
     return {
-      userId: state.activeUserId,
+      userId: "",
       trainingDateTime: getGridTrainingDateTimeIso(),
       mode,
       dotSize,
@@ -866,7 +764,6 @@
   }
 
   function readTmtSettings() {
-    applyTmtLogin();
     const type = getCheckedValue("tmtType");
     const mode = getCheckedValue("tmtMode");
     const nodeSize = Math.round(clamp(readNumber("tmt-node-size"), 42, 82));
@@ -877,7 +774,7 @@
     $("#tmt-item-count").value = String(itemCount);
 
     return {
-      userId: state.activeUserId,
+      userId: "",
       trainingDateTime: getTmtTrainingDateTimeIso(),
       type,
       mode,
@@ -896,6 +793,7 @@
   }
 
   function startSession(settings) {
+    settings = { ...settings, userId: "" };
     finishCleanup();
     state.settings = settings;
     state.running = true;
@@ -905,6 +803,7 @@
     state.current = null;
     state.currentRecord = null;
     state.sessionSaved = false;
+    state.sessionRecordId = createRecordId();
 
     showScreen(trainingScreen);
     updateTrainingStats();
@@ -1288,6 +1187,7 @@
   }
 
   function startGridSession(settings) {
+    settings = { ...settings, userId: "" };
     finishGridCleanup();
     state.grid.settings = settings;
     state.grid.running = true;
@@ -1301,6 +1201,7 @@
     state.grid.results = [];
     state.grid.currentRecord = null;
     state.grid.sessionSaved = false;
+    state.grid.sessionRecordId = createRecordId();
 
     showScreen(gridTrainingScreen);
     renderGridBoard();
@@ -1643,7 +1544,7 @@
       summaryItem("提示数", activeRecord.settings.targetCount || GRID_TOTAL),
     ].join("");
 
-    gridResultContext.textContent = `利用者ID: ${activeRecord.userId || "ID未入力"} / ${formatDateTime(activeRecord.createdAt)}`;
+    gridResultContext.textContent = recordContext(activeRecord);
     renderGridGuidance(activeRecord, summary);
     renderGridResultMap(activeRecord);
     renderGridTrialLog(activeRecord.results);
@@ -1907,8 +1808,8 @@
 
   function createUnsavedGridRecord() {
     return {
-      recordId: "current-grid",
-      userId: state.activeUserId,
+      recordId: state.grid.sessionRecordId || (state.grid.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.grid.settings && state.grid.settings.trainingDateTime
         ? state.grid.settings.trainingDateTime
         : new Date().toISOString(),
@@ -1922,13 +1823,13 @@
       return state.grid.currentRecord;
     }
     const record = {
-      recordId: createRecordId(),
-      userId: state.activeUserId,
+      recordId: state.grid.sessionRecordId || (state.grid.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.grid.settings.trainingDateTime || new Date().toISOString(),
       settings: { ...state.grid.settings },
       results: state.grid.results.map((result) => ({ ...result })),
     };
-    if (record.userId && record.results.length) {
+    if (record.results.length) {
       const records = readGridStoredRecords();
       records.unshift(record);
       if (!writeGridStoredRecords(records)) {
@@ -1985,6 +1886,7 @@
   }
 
   function startTmtSession(settings) {
+    settings = { ...settings, userId: "" };
     finishTmtCleanup();
     state.tmt.settings = settings;
     state.tmt.running = true;
@@ -1999,6 +1901,7 @@
     state.tmt.lastWrongId = null;
     state.tmt.currentRecord = null;
     state.tmt.sessionSaved = false;
+    state.tmt.sessionRecordId = createRecordId();
     state.tmt.totalTimeMs = null;
 
     showScreen(tmtTrainingScreen);
@@ -2368,7 +2271,7 @@
       summaryItem("最長ステップ", summary.longestStep ? `${summary.longestStep.expectedLabel} / ${formatMsAsSeconds(summary.longestStep.rt)}` : "-"),
     ].join("");
 
-    tmtResultContext.textContent = `利用者ID: ${activeRecord.userId || "ID未入力"} / ${formatDateTime(activeRecord.createdAt)}`;
+    tmtResultContext.textContent = recordContext(activeRecord);
     renderTmtGuidance(activeRecord, summary);
     renderTmtResultMap(activeRecord);
     renderTmtTrialLog(activeRecord.results);
@@ -2607,8 +2510,8 @@
 
   function createUnsavedTmtRecord() {
     return {
-      recordId: "current-tmt",
-      userId: state.activeUserId,
+      recordId: state.tmt.sessionRecordId || (state.tmt.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.tmt.settings && state.tmt.settings.trainingDateTime
         ? state.tmt.settings.trainingDateTime
         : new Date().toISOString(),
@@ -2624,15 +2527,15 @@
       return state.tmt.currentRecord;
     }
     const record = {
-      recordId: createRecordId(),
-      userId: state.activeUserId,
+      recordId: state.tmt.sessionRecordId || (state.tmt.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.tmt.settings.trainingDateTime || new Date().toISOString(),
       settings: { ...state.tmt.settings },
       items: state.tmt.items.map((item) => ({ ...item })),
       results: state.tmt.results.map((result) => ({ ...result })),
       totalTimeMs: state.tmt.totalTimeMs,
     };
-    if (record.userId && record.results.length) {
+    if (record.results.length) {
       const records = readTmtStoredRecords();
       records.unshift(record);
       if (!writeTmtStoredRecords(records)) {
@@ -2711,7 +2614,7 @@
       summaryItem("点滅速度", getBlinkSpeedLabel(activeRecord.settings.blinkSpeed, activeRecord.settings.blinkMode)),
     ].join("");
 
-    resultContext.textContent = `利用者ID: ${activeRecord.userId || "ID未入力"} / ${formatDateTime(activeRecord.createdAt)}`;
+    resultContext.textContent = recordContext(activeRecord);
     renderTrainingGuidance(activeRecord, summary);
     renderComparison(activeRecord);
     renderHistory(activeRecord);
@@ -2938,9 +2841,6 @@
 
   function initializePwaStatus() {
     appVersionLabel.textContent = VERSION_INFO.label;
-    updateOfflineStatus();
-    window.addEventListener("online", () => updateOfflineStatus());
-    window.addEventListener("offline", () => updateOfflineStatus());
     setupServiceWorkerMessages();
   }
 
@@ -2979,173 +2879,14 @@
   }
 
   function setupServiceWorkerMessages() {
-    const serviceWorker = getServiceWorkerApi();
-    if (!serviceWorker) {
-      return;
-    }
-
-    serviceWorker.addEventListener("message", (event) => {
-      if (!event.data) return;
-      if (event.data.type === "CACHE_REFRESH_FAILED" || event.data.error) {
-        state.updateReloading = false;
-        updateOfflineStatus("更新できませんでした");
-        return;
-      }
-      if (event.data.type !== "CACHE_REFRESHED") return;
-      if (!state.updateReloading) {
-        updateOfflineStatus("更新あり");
-        return;
-      }
-      updateOfflineStatus("最新版準備完了");
-      window.setTimeout(() => {
-        window.location.reload();
-      }, 700);
-    });
-
-    serviceWorker.addEventListener("controllerchange", () => {
-      if (!state.updateReloading) {
-        updateOfflineStatus("更新あり");
-        return;
-      }
-      window.location.reload();
-    });
-  }
-
-  function registerServiceWorker() {
-    const serviceWorker = getServiceWorkerApi();
-    if (!serviceWorker || window.location.protocol === "file:" || !window.isSecureContext) {
-      updateOfflineStatus();
-      return;
-    }
-    if (isInsideIntegratedStApp()) {
-      updateOfflineStatus();
-      return;
-    }
-
-    serviceWorker.register("./sw.js")
-      .then((registration) => {
-        watchServiceWorkerUpdate(registration);
-        return serviceWorker.ready;
-      })
-      .then(() => {
-        updateOfflineStatus();
-      })
-      .catch(() => {
-        updateOfflineStatus("準備できません");
-      });
-  }
-
-  function isInsideIntegratedStApp() {
-    return window.location.pathname.includes("/st-attention-training-v0.1/");
-  }
-
-  function watchServiceWorkerUpdate(registration) {
-    registration.addEventListener("updatefound", () => {
-      const worker = registration.installing;
-      if (!worker) {
-        return;
-      }
-      worker.addEventListener("statechange", () => {
-        if (worker.state === "installed" && getServiceWorkerApi().controller) {
-          updateOfflineStatus("更新あり");
-        }
-      });
-    });
-  }
-
-  function refreshOfflineApp() {
-    const serviceWorker = getServiceWorkerApi();
-    if (!serviceWorker || window.location.protocol === "file:" || !window.isSecureContext) {
-      updateOfflineStatus("HTTPS接続が必要");
-      return;
-    }
-    if (!confirmVersionSwitchIfNeeded()) {
-      updateOfflineStatus("更新を保留しました");
-      return;
-    }
-
-    updateOfflineStatus("最新版確認中");
-    updateAppButton.disabled = true;
-
-    const updatePromise = serviceWorker.getRegistration()
-      .then((registration) => registration || serviceWorker.register("./sw.js"))
-      .then((registration) => {
-        watchServiceWorkerUpdate(registration);
-        return registration.update().then(() => registration);
-      })
-      .then((registration) => {
-        if (registration.waiting) {
-          state.updateReloading = true;
-          updateOfflineStatus("最新版へ切り替え中");
-          registration.waiting.postMessage({ type: "SKIP_WAITING" });
-          return;
-        }
-        if (serviceWorker.controller) {
-          return sendRefreshMessage(serviceWorker.controller).then((message) => {
-            if (!message) return;
-            if (message.error || message.type === "CACHE_REFRESH_FAILED") {
-              throw new Error(message.error || "refresh failed");
-            }
-            state.updateReloading = true;
-            updateOfflineStatus("最新版準備完了");
-            window.setTimeout(() => {
-              window.location.reload();
-            }, 700);
-          });
-        }
-        updateOfflineStatus("準備完了");
-      })
-      .catch(() => {
-        state.updateReloading = false;
-        updateOfflineStatus("確認できません");
-      });
-
-    withTimeout(updatePromise, 15000)
-      .catch(() => {
-        updateOfflineStatus("確認できません");
-      })
-      .finally(() => {
-        window.setTimeout(() => {
-          updateAppButton.disabled = false;
-        }, 700);
-      });
-  }
-
-  function sendRefreshMessage(worker) {
-    return new Promise((resolve) => {
-      const channel = new MessageChannel();
-      const timeoutId = window.setTimeout(() => resolve({
-        type: "CACHE_REFRESH_FAILED",
-        error: "timeout",
-      }), 7000);
-      channel.port1.onmessage = (event) => {
-        window.clearTimeout(timeoutId);
-        resolve(event.data);
-      };
-      worker.postMessage({ type: "REFRESH_CACHE" }, [channel.port2]);
-    });
-  }
-
-  function confirmVersionSwitchIfNeeded() {
-    if (!state.running && !state.grid.running && !state.tmt.running) {
-      return true;
-    }
-    return confirm("訓練中です。最新版へ切り替えると現在の訓練は中断されます。続行しますか。");
-  }
-
-  function withTimeout(promise, timeoutMs) {
-    return Promise.race([
-      promise,
-      new Promise((_, reject) => {
-        window.setTimeout(() => reject(new Error("timeout")), timeoutMs);
-      }),
-    ]);
+    window.StPwaUpdates.start({buttonId: "update-app-button", statusId: "offline-status", isBusy: () => state.running || state.grid.running || state.tmt.running ||
+      (state.currentRecord && !state.sessionSaved) || (state.grid.currentRecord && !state.grid.sessionSaved) || (state.tmt.currentRecord && !state.tmt.sessionSaved)});
   }
 
   function createUnsavedRecord() {
     return {
-      recordId: "current",
-      userId: state.activeUserId,
+      recordId: state.sessionRecordId || (state.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.settings && state.settings.trainingDateTime
         ? state.settings.trainingDateTime
         : new Date().toISOString(),
@@ -3175,48 +2916,17 @@
   }
 
   function renderSetupHistory() {
-    if (!state.activeUserId) {
-      setupHistoryContext.textContent = "IDを入力してログインすると履歴を確認できます";
-      setupLastSummary.innerHTML = summaryItem("前回結果", "ID未入力");
-      setupHistoryResults.innerHTML = `
-        <tr>
-          <td colspan="8" class="muted-table-message">IDを入力してログインすると、このIDの前回結果と履歴を表示します</td>
-        </tr>
-      `;
-      return;
-    }
-
-    const records = getRecordsForUser(state.activeUserId).slice(0, 10);
-    setupHistoryContext.textContent = `利用者ID: ${state.activeUserId}`;
-
-    if (!records.length) {
-      setupLastSummary.innerHTML = summaryItem("前回結果", "履歴なし");
-      setupHistoryResults.innerHTML = `
-        <tr>
-          <td colspan="8" class="muted-table-message">このIDの履歴はまだありません</td>
-        </tr>
-      `;
-      return;
-    }
-
-    const latest = records[0];
-    const summary = summarizeRecord(latest);
-    setupLastSummary.innerHTML = [
-      summaryItem("前回訓練日時", formatDateTime(latest.createdAt)),
-      summaryItem("正答率", `${summary.accuracy}%`),
-      summaryItem("正反応", summary.hit),
-      summaryItem("見逃し", summary.miss),
-      summaryItem("平均反応時間", formatMsAsSeconds(summary.averageRt)),
-    ].join("");
-
-    setupHistoryResults.innerHTML = buildHistoryRows(records, null);
+    const records = readStoredRecords().slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    setupHistoryContext.textContent = "移動刺激の全履歴。日時から選択してください。同じ利用者の前回とは限りません。";
+    setupLastSummary.innerHTML = summaryItem("保存済み実施数", records.length);
+    setupHistoryResults.innerHTML = records.length ? buildHistoryRows(records,null) : '<tr><td colspan="8">履歴はまだありません</td></tr>';
   }
 
   function renderComparison(record) {
     if (!record.userId) {
       comparisonResults.innerHTML = `
         <tr>
-          <td colspan="4" class="muted-table-message">ID未入力のため前回比較は表示されません</td>
+          <td colspan="4" class="muted-table-message">IDによる利用者の識別を行わないため、新しい記録は自動比較しません。履歴を日時から選択してください。</td>
         </tr>
       `;
       return;
@@ -3265,26 +2975,8 @@
   }
 
   function renderHistory(record) {
-    if (!record.userId) {
-      historyResults.innerHTML = `
-        <tr>
-          <td colspan="8" class="muted-table-message">ID未入力のため履歴は保存されません</td>
-        </tr>
-      `;
-      return;
-    }
-
-    const records = getRecordsForUser(record.userId).slice(0, 10);
-    if (!records.length) {
-      historyResults.innerHTML = `
-        <tr>
-          <td colspan="8" class="muted-table-message">このIDの履歴はまだありません</td>
-        </tr>
-      `;
-      return;
-    }
-
-    historyResults.innerHTML = buildHistoryRows(records, record.recordId);
+    const records = readStoredRecords().slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    historyResults.innerHTML = records.length ? buildHistoryRows(records,record.recordId) : '<tr><td colspan="8">履歴はまだありません</td></tr>';
   }
 
   function buildHistoryRows(records, selectedRecordId) {
@@ -3451,14 +3143,14 @@
     }
 
     const record = {
-      recordId: createRecordId(),
-      userId: state.activeUserId,
+      recordId: state.sessionRecordId || (state.sessionRecordId = createRecordId()),
+      userId: "",
       createdAt: state.settings.trainingDateTime || new Date().toISOString(),
       settings: { ...state.settings },
       results: state.results.map((result) => ({ ...result })),
     };
 
-    if (record.userId && record.results.length) {
+    if (record.results.length) {
       const records = readStoredRecords();
       records.unshift(record);
       if (!writeStoredRecords(records)) {
@@ -3567,6 +3259,7 @@
           return;
         }
         renderSetupHistory();
+        renderAllHistory();
         alert(`${totalImported}件の履歴を読み込みました。`);
       } catch {
         alert("読み込みに失敗しました。ファイル形式を確認してください。");
@@ -3653,8 +3346,34 @@
     return readStoredRecords().find((record) => record.recordId === recordId) || null;
   }
 
+  function recordContext(record) {
+    return formatDateTime(record.createdAt) + (record.userId ? ` ／ 旧ID: ${record.userId}` : "");
+  }
+
+  function allHistory() {
+    return [["motion",readStoredRecords()],["grid",readGridStoredRecords()],["tmt",readTmtStoredRecords()]].flatMap(([task,records])=>records.map(record=>({task,record}))).sort((a,b)=>new Date(b.record.createdAt)-new Date(a.record.createdAt));
+  }
+
+  function renderAllHistory() {
+    const body=$("#all-training-history");
+    if(!body)return;
+    const names={motion:"移動刺激選択反応",grid:"視覚探索グリッド",tmt:"TMT風順序探索"};
+    const records=allHistory();
+    body.innerHTML=records.length?records.map(({task,record})=>`<tr><td>${escapeHtml(formatDateTime(record.createdAt))}</td><td>${names[task]}</td><td>${escapeHtml(record.userId || "—")}</td><td>${record.results.length}</td><td><button type="button" class="secondary-action" data-history-task="${task}" data-history-record="${escapeHtml(record.recordId)}">結果を表示</button></td></tr>`).join(""):'<tr><td colspan="5">履歴はまだありません</td></tr>';
+  }
+
+  function openHistoryRecord(event) {
+    const button=event.target.closest("[data-history-record]");
+    if(!button)return;
+    const found=allHistory().find(x=>x.task===button.dataset.historyTask&&x.record.recordId===button.dataset.historyRecord);
+    if(!found)return;
+    if(found.task==="grid"){state.grid.sessionSaved=true;renderGridResults(found.record);showScreen(gridResultScreen);}
+    else if(found.task==="tmt"){state.tmt.sessionSaved=true;renderTmtResults(found.record);showScreen(tmtResultScreen);}
+    else {state.sessionSaved=true;renderResults(found.record);showScreen(resultScreen);}
+  }
+
   function createRecordId() {
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    return crypto.randomUUID();
   }
 
   function downloadCsv() {
@@ -3711,6 +3430,7 @@
   }
 
   function showScreen(screen) {
+    if (screen === homeScreen) renderAllHistory();
     [
       homeScreen,
       setupScreen,
@@ -3898,4 +3618,16 @@
     if (typeof structuredClone === "function") return structuredClone(value);
     return JSON.parse(JSON.stringify(value));
   }
+
+  // Presentation-only bridge. Existing task/save functions remain unchanged.
+  window.StAttentionUI = Object.freeze({
+    busy: () => state.running || state.grid.running || state.tmt.running ||
+      !!(state.currentRecord && !state.sessionSaved) || !!(state.grid.currentRecord && !state.grid.sessionSaved) || !!(state.tmt.currentRecord && !state.tmt.sessionSaved),
+    task: (task) => {
+      if (window.StAttentionUI.busy()) return false;
+      if (task === "grid") openGridSetup(); else if (task === "tmt") openTmtSetup(); else openMotionSetup();
+      return true;
+    },
+    refreshHistory: renderAllHistory,
+  });
 })();

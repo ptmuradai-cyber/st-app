@@ -1,8 +1,1 @@
-(function (root) {
-  "use strict";
-
-  root.CATR_APP_VERSION = {
-    version: "0.1.3-storage-update-20261012-1",
-    label: "v0.1.3 保存・更新安全化 2026.10.12",
-  };
-})(typeof self !== "undefined" ? self : window);
+(function(root){root.CATR_APP_VERSION={"version": "1.3.0-restored-762-catr-records-1", "label": "CAT-R入力 非公式・記録補助 候補"};})(typeof self!=="undefined"?self:globalThis);
