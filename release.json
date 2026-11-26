@@ -1,6 +1,6 @@
 {
-  "build": "restored-762-catr-records-130-1",
-  "version": "1.3.0-restored-762-catr-records-1",
+  "build": "update-safe-131-1",
+  "version": "1.3.1-update-safe-1",
   "modules": {
     "picture": "1.3.0-restored-762-catr-records-1",
     "attention": "2.4.0-workspace-review-1",
@@ -23,10 +23,10 @@
     "./picture-card-training/app.js": "80adead7d3b88705ffd8e97099652bb40d48730d96524856057234ec72cf5476",
     "./": "d79d058d9be4598fdbf21a3eded832872cfd0566b26887f06c04101ac21bd0b0",
     "./index.html": "d79d058d9be4598fdbf21a3eded832872cfd0566b26887f06c04101ac21bd0b0",
-    "./version.js": "2802955df0ca8d75558cd2b7cfb7b72f6f6d27a4368eb7c3d8ad2e6b5cce2c90",
+    "./version.js": "bc571a5f1bdc98f76585d5b466778162579c48cff4b49742e577b1e929455cc7",
     "./styles.css": "d56b465e6361229ad752214b9e2b9ffcd5e3e7606e1a6595d7e5fcc61d4a11fe",
     "./app.js": "90dcce3ffd8bcc8d67e9f6a773018aa01bb8184539d313bf010b37082aae02cf",
-    "./pwa-update.js": "f231242b1ca26d75e73b7fb3d674e305606519ce0fe302916d29389621f16e63",
+    "./pwa-update.js": "dfe927a0e06b2c8a2fa86d771ba68acc786e848b310948ddde40808d32ce23f7",
     "./update-migration.html": "8d01739b539ee4df5dee7e347cdd0b922c4cb54528d20816739b4ff7e58646cb",
     "./update-migration.js": "406dd6918fe706453197fd4d78812fb34085115aba49c2b8c40447028dffc333",
     "./migration-route.js": "047f06c07f6939c0d825c31278d9cdcd7a4f1dfd6ba6b27999ecc3b10a5bb4fe",

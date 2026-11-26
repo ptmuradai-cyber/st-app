@@ -10,7 +10,7 @@
   function status(text, error = "") {
     message = text; reason = error;
     const label = document.getElementById(options.statusId);
-    if (label) label.textContent = text;
+    if (label) label.textContent = text + (error ? "：" + error : "");
   }
   function rpc(worker, type, timeout = 12000) {
     return new Promise((resolve, reject) => {
@@ -40,11 +40,11 @@
   function waitInstalling(worker) {
     if (!worker || worker.state === "installed" || worker.state === "activated") return Promise.resolve();
     return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => done(new Error("新版の取得が時間内に完了しませんでした")), 90000);
+      const timer = setTimeout(() => done(new Error("新版の取得が時間内に完了しませんでした")), 600000);
       function done(error) { clearTimeout(timer); worker.removeEventListener("statechange", check); error ? reject(error) : resolve(); }
       function check() {
         if (worker.state === "installed" || worker.state === "activated") done();
-        else if (worker.state === "redundant") done(new Error("新版の取得・検証・保存に失敗しました。通信と空き容量を確認してください"));
+        else if (worker.state === "redundant") done(new Error(reason || "新版の取得・検証・保存に失敗しました。通信と空き容量を確認してください"));
       }
       worker.addEventListener("statechange", check); check();
     });
@@ -159,6 +159,14 @@
     if (!sw || !isSecureContext || location.protocol === "file:") { status("HTTPS接続が必要"); return; }
     sw.addEventListener("message", event => {
       if (event.source?.scriptURL !== new URL("sw.js", root).href) return;
+      if (event.data?.type === "ST_UPDATE_PROGRESS") {
+        const d=event.data;
+        if(d.stage==="downloading") status((d.material?"教材を取得中":"新版を取得中")+"（"+d.done+"/"+d.total+"）"+(d.attempt>1?"・再試行 "+d.attempt:""));
+        if(d.stage==="verifying") status("取得したファイルを検証中（"+d.done+"/"+d.total+"）");
+        if(d.stage==="ready"&&!running) status("新版の準備完了・最新版を確認してください");
+        if(d.stage==="restart-required"){reloadExpected=null;unlock();status("新版の準備完了・再起動が必要",d.reason);}
+        if(d.stage==="failed") status("更新失敗・旧版を継続",d.reason);
+      }
       if (event.data?.type === "ST_PREPARE_UPDATE") {
         const ready = !busy();
         if (ready && !locked) lock();
